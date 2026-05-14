@@ -5,12 +5,7 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    let body = '';
-    await new Promise((resolve) => {
-      req.on('data', chunk => { body += chunk; });
-      req.on('end', resolve);
-    });
-    const { nombre } = JSON.parse(body);
+    const nombre = req.body?.nombre || JSON.parse(await new Promise(r => { let d=''; req.on('data',c=>d+=c); req.on('end',()=>r(d)); }))?.nombre;
     
     const claudeResp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
