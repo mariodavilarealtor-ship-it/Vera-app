@@ -5,7 +5,8 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    const { nombre } = req.body;
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    const { nombre } = body;
     
     const claudeResp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
