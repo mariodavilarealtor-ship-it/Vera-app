@@ -5,8 +5,12 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    const { nombre } = body;
+    let body = '';
+    await new Promise((resolve) => {
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', resolve);
+    });
+    const { nombre } = JSON.parse(body);
     
     const claudeResp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -26,6 +30,6 @@ module.exports = async function handler(req, res) {
     res.status(200).json({ opening: data.content[0].text, test: true });
 
   } catch (error) {
-    res.status(500).json({ error: error.message, stack: error.stack });
+    res.status(500).json({ error: error.message });
   }
 }
