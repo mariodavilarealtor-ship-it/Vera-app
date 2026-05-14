@@ -1025,16 +1025,26 @@ IMPORTANTE: Responde SOLO con el JSON. Sin texto antes ni después. Sin backtick
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
+        nombre: state.nombre,
+        email: state.email,
+        fecha: state.fecha,
+        hora: state.hora,
+        ciudad: state.ciudad,
+        ciudadActual: state.ciudadActual,
+        dolor: state.dolor,
+        emocion: state.emocion,
+        relacion: state.relacion,
+        dinero: state.dinero
       })
     });
 
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error('API error: ' + err);
+    }
+
     const data = await response.json();
-    const text = data.content.map(c => c.text || '').join('');
-    const clean = text.replace(/```json|```/g, '').trim();
-    return JSON.parse(clean);
+    return data;
   }
 
   function getSunSign(day, month) {
