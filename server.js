@@ -58,7 +58,7 @@ headers: {
 "anthropic-version": "2023-06-01",
 },
 body: JSON.stringify({
-model: "claude-3-haiku-20240307",
+model: "claude-haiku-4-5-20251001",
 max_tokens: 8000,
 system: `Eres el motor de VER·A, plataforma de educación emocional personalizada en español.
 Generas perfiles profundos y motivadores basados en fecha, hora y lugar de nacimiento.
