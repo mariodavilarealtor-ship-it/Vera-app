@@ -1,111 +1,101 @@
-// VER·A — api/generate.js — DIAGNÓSTICO FINAL
-// Retorna el error exacto de cada API para identificar la causa raíz
-
 module.exports = async function handler(req, res) {
-res.setHeader(“Access-Control-Allow-Origin”, “*”);
-res.setHeader(“Access-Control-Allow-Methods”, “POST, OPTIONS”);
-res.setHeader(“Access-Control-Allow-Headers”, “Content-Type”);
-if (req.method === “OPTIONS”) return res.status(200).end();
-if (req.method !== “POST”) return res.status(405).json({ error: “Método no permitido” });
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method !== "POST") return res.status(405).json({ error: "Metodo no permitido" });
 
-// BODY PARSING
-let body;
-try {
-body = await new Promise((resolve, reject) => {
-let raw = “”;
-req.on(“data”, chunk => { raw += chunk; });
-req.on(“end”, () => { try { resolve(JSON.parse(raw)); } catch(e) { reject(e); } });
-req.on(“error”, reject);
-});
-} catch(err) {
-return res.status(400).json({ paso: “BODY”, error: err.message });
-}
+  let body;
+  try {
+    body = await new Promise((resolve, reject) => {
+      let raw = "";
+      req.on("data", chunk => { raw += chunk; });
+      req.on("end", () => { try { resolve(JSON.parse(raw)); } catch(e) { reject(e); } });
+      req.on("error", reject);
+    });
+  } catch(err) {
+    return res.status(400).json({ error: "Body error: " + err.message });
+  }
 
-const { nombre, fecha, hora, ciudad } = body;
-if (!nombre || !fecha || !hora || !ciudad) {
-return res.status(400).json({ paso: “VALIDACION”, error: “Faltan campos”, recibido: body });
-}
+  const CLAUDE_KEY = process.env.ANTHROPIC_API_KEY;
+  if (!CLAUDE_KEY) return res.status(500).json({ error: "Sin API key de Claude" });
 
-const [year, month, day] = fecha.split(”-”).map(Number);
-const [hour, minute] = hora.split(”:”).map(Number);
-const ASTRO_KEY = process.env.ASTROLOGY_API_KEY;
-const CLAUDE_KEY = process.env.ANTHROPIC_API_KEY;
+  const { nombre, fecha, hora, ciudad } = body;
 
-// PRUEBA 1: Variables de entorno
-if (!ASTRO_KEY || !CLAUDE_KEY) {
-return res.status(500).json({
-paso: “ENV_VARS”,
-astro_key_existe: !!ASTRO_KEY,
-claude_key_existe: !!CLAUDE_KEY
-});
-}
+  let claudeRes, claudeData;
+  try {
+    claudeRes = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": CLAUDE_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 8000,
+        system: `Eres el motor de VER·A, plataforma de educación emocional personalizada en español.
+Generas perfiles profundos y motivadores basados en fecha, hora y lugar de nacimiento.
+NUNCA uses términos técnicos: astrología, planetas, signos, casas, Kabbalah, chakras.
+USA SIEMPRE: código de origen, fuerzas, áreas de vida, equilibrio energético, herida original, frecuencia de origen.
+Responde SOLO con JSON válido, sin markdown, sin texto extra:
+{
+  "quienEres": "4-5 oraciones sobre identidad profunda",
+  "tuEnergia": {
+    "descripcion": "2-3 oraciones sobre cómo procesa la realidad",
+    "distribucion": {"accion": número, "pensamiento": número, "emocion": número, "intuicion": número}
+  },
+  "tuProposito": "4-5 oraciones sobre pasión talento misión y camino",
+  "tuFrecuenciaDeOrigen": "3-4 oraciones sobre su vibración única",
+  "tuEquilibrioEnergetico": {
+    "diagnostico": "2-3 oraciones sobre el desequilibrio y su impacto",
+    "elementoDebil": "Fuego o Tierra o Aire o Agua",
+    "practicas": ["práctica PNL 1", "práctica PNL 2", "práctica PNL 3"],
+    "frecuencia": {"hz": "número hz", "nombre": "nombre de la frecuencia"}
+  },
+  "tuHerida": "4-5 oraciones sobre la herida profunda y cómo convertirla en poder",
+  "tuMomentoActual": "3-4 oraciones sobre el ciclo actual y su oportunidad",
+  "tuPracticaDiaria": {
+    "gratitud": "frase de gratitud personalizada",
+    "conexion": "oración de conexión con algo más grande sin religión",
+    "pregunta": "pregunta de inteligencia emocional para este momento"
+  },
+  "mensajeFinal": "3-4 oraciones motivadoras de cierre"
+}`,
+        messages: [{
+          role: "user",
+          content: `Genera el perfil VER·A completo para:
+Nombre: ${nombre}
+Fecha de nacimiento: ${fecha}
+Hora de nacimiento: ${hora}
+Ciudad de nacimiento: ${ciudad}
 
-// PRUEBA 2: Claude directo — sin astrology-api
-let claudeStatus, claudeRaw;
-try {
-const cr = await fetch(“https://api.anthropic.com/v1/messages”, {
-method: “POST”,
-headers: {
-“Content-Type”: “application/json”,
-“x-api-key”: CLAUDE_KEY,
-“anthropic-version”: “2023-06-01”,
-},
-body: JSON.stringify({
-model: “claude-sonnet-4-20250514”,
-max_tokens: 100,
-messages: [{ role: “user”, content: `Responde solo: HOLA ${nombre}` }],
-}),
-});
-claudeStatus = cr.status;
-claudeRaw = await cr.json();
-} catch(err) {
-return res.status(500).json({ paso: “CLAUDE_FETCH”, error: err.message });
-}
+Personaliza cada sección profundamente para esta persona específica.
+Los 4 valores de distribucion deben sumar exactamente 100.`
+        }]
+      })
+    });
+    claudeData = await claudeRes.json();
+  } catch(err) {
+    return res.status(500).json({ error: "Claude fetch error: " + err.message });
+  }
 
-if (claudeStatus !== 200) {
-return res.status(500).json({
-paso: “CLAUDE_ERROR”,
-status: claudeStatus,
-respuesta_completa: claudeRaw
-});
-}
+  if (claudeRes.status !== 200) {
+    return res.status(500).json({ 
+      error: "Claude API error", 
+      status: claudeRes.status,
+      detalle: claudeData 
+    });
+  }
 
-const claudeText = claudeRaw?.content?.[0]?.text || “”;
+  const texto = (claudeData.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+  
+  let perfil;
+  try {
+    perfil = JSON.parse(texto.replace(/```json|```/g, "").trim());
+  } catch(err) {
+    return res.status(500).json({ error: "JSON parse error", texto_recibido: texto.slice(0, 300) });
+  }
 
-// PRUEBA 3: astrology-api.io
-let astroStatus, astroRaw;
-try {
-const birthPayload = {
-datetime: `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}T${String(hour).padStart(2,"0")}:${String(minute).padStart(2,"0")}:00`,
-latitude: 10.18,
-longitude: -67.99,
-timezone: “America/Caracas”,
-house_system: “placidus”,
-};
-const ar = await fetch(“https://api.astrology-api.io/api/v3/data/positions”, {
-method: “POST”,
-headers: {
-“Content-Type”: “application/json”,
-“Authorization”: `Bearer ${ASTRO_KEY}`,
-},
-body: JSON.stringify(birthPayload),
-});
-astroStatus = ar.status;
-astroRaw = await ar.json();
-} catch(err) {
-return res.status(500).json({ paso: “ASTRO_FETCH”, error: err.message });
-}
-
-// RESULTADO COMPLETO
-return res.status(200).json({
-diagnostico: “COMPLETO”,
-claude: {
-status: claudeStatus,
-respuesta: claudeText
-},
-astrology: {
-status: astroStatus,
-respuesta: JSON.stringify(astroRaw).slice(0, 500)
-}
-});
+  return res.status(200).json({ success: true, nombre, perfil });
 };
