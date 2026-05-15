@@ -220,7 +220,7 @@ Responde con este JSON exacto (sin texto extra, sin backticks):
         }
 
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ success: true, nombre, perfil }));
+        res.end(JSON.stringify(perfil));
 
       } catch(err) {
         res.writeHead(500, { "Content-Type": "application/json" });
