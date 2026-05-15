@@ -1,4 +1,4 @@
-// VER·A — api/generate.js — VERSIÓN DIAGNÓSTICO
+// VER·A — api/generate.js — VERSIÓN DIAGNÓSTICO 2
 // Subir temporalmente para identificar dónde falla exactamente
 // Una vez identificado el error, subir la versión final
 
