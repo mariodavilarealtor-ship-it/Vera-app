@@ -1021,7 +1021,7 @@ ESTRUCTURA DEL PERFIL (responde en JSON con estas secciones exactas):
 
 IMPORTANTE: Responde SOLO con el JSON. Sin texto antes ni después. Sin backticks.`;
 
-    const response = await fetch('/api/generate', {
+    const response = await fetch('https://vera-app-drg7.onrender.com/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
