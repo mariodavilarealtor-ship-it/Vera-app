@@ -237,3 +237,7 @@ Responde con este JSON exacto (sin texto extra, sin backticks):
 server.listen(PORT, () => {
   console.log(`VER·A API corriendo en puerto ${PORT}`);
 });
+// Keep-alive: evita que Render se duerma
+setInterval(() => {
+fetch(`http://localhost:${PORT}/`).catch(() => {});
+}, 600000);
