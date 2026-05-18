@@ -169,10 +169,13 @@ Responde con este JSON exacto (sin texto extra, sin backticks):
     "practica": "práctica concreta para esta semana"
   },
   "momento_actual": {
-    "descripcion": "qué ciclo está viviendo ${nombre} ahora — específico y concreto",
-    "accion_semana": "UNA acción concreta para ${nombre} esta semana",
-    "frase": "cita motivadora"
-  },
+  "ciclo_de_vida": "en qué gran ciclo está ${nombre} — Formación 0-27, Construcción 27-54, Consolidación 54-82 — basado en sus ${new Date().getFullYear() - new Date(fecha).getFullYear()} años",
+  "fase_del_ciclo": "si está en expansión años 1-9, consolidación años 10-18 o cosecha años 19-27 dentro de su ciclo — qué significa para ${nombre}",
+  "ventana": "si este es momento de sembrar, construir o recoger — concreto para ${nombre}",
+  "tension_activa": "qué está siendo activado en ${nombre} ahora que no puede ignorar",
+  "accion_semana": "UNA acción concreta para ${nombre} esta semana alineada con su ciclo",
+  "frase": "frase que ubica a ${nombre} donde está y hacia dónde va"
+},
   "ciudades": [
     {"emoji": "📍", "ciudad": "${ciudadActual || ciudad} — Donde estás", "descripcion": "por qué esta ciudad es la base de lanzamiento de ${nombre}"},
     {"emoji": "🥇", "ciudad": "nombre ciudad", "descripcion": "por qué esta ciudad específicamente para alguien con la energía de ${nombre}"},
