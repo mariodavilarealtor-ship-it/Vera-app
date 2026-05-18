@@ -153,10 +153,12 @@ Responde con este JSON exacto (sin texto extra, sin backticks):
     "frecuencia": "Hz específico para ${elementoDebil} y su nombre en lenguaje VER·A"
   },
   "herida_don": {
-    "herida": "descripción específica conectando ${quiron} con la respuesta emocional ${dolor} de ${nombre}",
-    "don": "cómo exactamente esa herida se convierte en el mayor poder de ${nombre}",
-    "practica_pnl": "técnica PNL específica para ${nombre} esta semana",
-    "frase": "cita transformadora específica para esta herida"
+   "herida": "descripción específica conectando ${quiron} con la respuesta emocional ${dolor} de ${nombre}",
+"don": "cómo exactamente esa herida se convierte en el mayor poder de ${nombre}",
+"sombra_reprimida": "qué parte de ${nombre} fue suprimida o castigada — lo que aprendió a esconder para ser aceptado",
+"poder_recuperado": "cómo integrar esa sombra se convierte en la fuente más auténtica de poder de ${nombre} — no eliminarla sino reclamarla",
+"practica_pnl": "técnica PNL específica para ${nombre} esta semana",
+"frase": "cita transformadora específica para esta herida"
   },
   "vinculos": {
     "patron": "el patrón específico de ${nombre} en relaciones basado en su respuesta: ${relacion}",
