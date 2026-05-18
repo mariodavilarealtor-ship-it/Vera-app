@@ -90,6 +90,7 @@ Responde SOLO con JSON válido. Sin markdown. Sin texto antes ni después. Sin b
 ═══ DATOS PERSONALES ═══
 Nombre: ${nombre}
 Fecha de nacimiento: ${fecha}
+Edad actual: ${new Date().getFullYear() - new Date(fecha).getFullYear()} años (año actual: ${new Date().getFullYear()})
 Hora de nacimiento: ${hora || "no disponible"}
 Ciudad natal: ${ciudad}
 Ciudad actual: ${ciudadActual || ciudad}
