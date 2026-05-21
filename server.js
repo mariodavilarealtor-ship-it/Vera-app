@@ -65,7 +65,7 @@ const server = http.createServer(async (req, res) => {
           },
           body: JSON.stringify({
             model: "claude-sonnet-4-5",
-            max_tokens: 8000,
+            max_tokens: 16000,
             system: `Eres el motor de VER·A, plataforma de educación emocional personalizada en español.
 
 REGLA ABSOLUTA: NUNCA uses estos términos: astrología, carta natal, planetas, signos zodiacales, casas astrológicas, Kabbalah, chakras, ángeles, tránsitos, Quirón, ascendente, nodo norte, retrogrado.
