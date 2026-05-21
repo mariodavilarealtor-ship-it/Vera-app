@@ -990,9 +990,10 @@
 
       <div class="report-section">
 <div class="section-label">Tu Momento Actual</div>
-<div class="section-body">${data.momento_actual.ciclo_de_vida || ''}</div>
-<div class="section-body" style="margin-top:0.8rem">${data.momento_actual.fase_del_ciclo || ''}</div>
-<div class="section-body" style="margin-top:0.8rem">${data.momento_actual.ventana || ''}</div>
+<div class="section-body">${data.momento_actual.ciclo_de_vida || ""}</div>
+<div class="section-body" style="margin-top:0.8rem">${data.momento_actual.fase_del_ciclo || ""}</div>
+<div class="section-body" style="margin-top:0.8rem">${data.momento_actual.ventana || ""}</div>
+
 <div class="dark-box"><strong style="color:var(--gold-light)">Lo que no puedes ignorar:</strong> ${data.momento_actual.tension_activa}</div>
 <div class="dark-box"><strong style="color:var(--gold-light)">Esta semana:</strong> ${data.momento_actual.accion_semana}</div>
 <div class="quote-box">${data.momento_actual.frase}</div>
