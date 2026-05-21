@@ -216,7 +216,9 @@ Responde con este JSON exacto (sin texto extra, sin backticks):
           .filter(b => b.type === "text")
           .map(b => b.text)
           .join("");
-console.log("CLAUDE RESPONSE:", texto.slice(0, 1000));
+const idx = texto.indexOf("momento_actual");
+console.log("MOMENTO_ACTUAL EN JSON:", texto.slice(idx, idx + 500));
+
         let perfil;
         try {
         const textoLimpio = texto.replace(/```json\n?|```/g, "").trim();
