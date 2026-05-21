@@ -215,7 +215,7 @@ Responde con este JSON exacto (sin texto extra, sin backticks):
           .filter(b => b.type === "text")
           .map(b => b.text)
           .join("");
-
+console.log("CLAUDE RESPONSE:", texto.slice(0, 1000));
         let perfil;
         try {
           perfil = JSON.parse(texto.replace(/```json|```/g, "").trim());
