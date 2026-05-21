@@ -135,6 +135,14 @@ Responde con este JSON exacto (sin texto extra, sin backticks):
     "camino": "cómo lo materializa",
     "frase": "cita que resuene con ${nombre}"
   },
+  "momento_actual": {
+  "ciclo_de_vida": "en qué gran ciclo vital está ${nombre} ahora (Formación/Construcción/Consolidación) basado en su edad de ${new Date().getFullYear() - new Date(fecha).getFullYear()} años",
+  "fase_del_ciclo": "en qué fase específica está dentro de su ciclo actual (expansión/consolidación/cosecha)",
+  "ventana": "si este es momento de sembrar, construir o recoger — concreto para ${nombre}",
+  "tension_activa": "qué tensión específica está activa en ${nombre} ahora que no puede ignorar",
+  "accion_semana": "UNA acción concreta para ${nombre} esta semana alineada con su ciclo",
+  "frase": "frase que ubica a ${nombre} donde está y hacia dónde va"
+},
   "codigo_72": {
     "numero": ${codigo72Numero || 1},
     "nombre": "${codigo72Nombre || "El Transformador"}",
@@ -170,14 +178,7 @@ Responde con este JSON exacto (sin texto extra, sin backticks):
     "transformacion": "cómo ${nombre} específicamente transforma ese patrón",
     "practica": "práctica concreta para esta semana"
   },
-"momento_actual": {
-  "ciclo_de_vida": "en qué gran ciclo vital está ${nombre} ahora (Formación/Construcción/Consolidación) basado en su edad de ${new Date().getFullYear() - new Date(fecha).getFullYear()} años",
-  "fase_del_ciclo": "en qué fase específica está dentro de su ciclo actual (expansión/consolidación/cosecha)",
-  "ventana": "si este es momento de sembrar, construir o recoger — concreto para ${nombre}",
-  "tension_activa": "qué tensión específica está activa en ${nombre} ahora que no puede ignorar",
-  "accion_semana": "UNA acción concreta para ${nombre} esta semana alineada con su ciclo",
-  "frase": "frase que ubica a ${nombre} donde está y hacia dónde va"
-},
+
   "ciudades": [
     {"emoji": "📍", "ciudad": "${ciudadActual || ciudad} — Donde estás", "descripcion": "por qué esta ciudad es la base de lanzamiento de ${nombre}"},
     {"emoji": "🥇", "ciudad": "nombre ciudad", "descripcion": "por qué esta ciudad específicamente para alguien con la energía de ${nombre}"},
