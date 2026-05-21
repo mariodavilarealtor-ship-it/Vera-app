@@ -170,11 +170,11 @@ Responde con este JSON exacto (sin texto extra, sin backticks):
     "transformacion": "cómo ${nombre} específicamente transforma ese patrón",
     "practica": "práctica concreta para esta semana"
   },
-  "momento_actual": {
-  "ciclo_de_vida": "en qué gran ciclo está ${nombre} — Formación 0-27, Construcción 27-54, Consolidación 54-82 — basado en sus ${new Date().getFullYear() - new Date(fecha).getFullYear()} años",
-  "fase_del_ciclo": "si está en expansión años 1-9, consolidación años 10-18 o cosecha años 19-27 dentro de su ciclo — qué significa para ${nombre}",
+"momento_actual": {
+  "ciclo_de_vida": "en qué gran ciclo vital está ${nombre} ahora (Formación/Construcción/Consolidación) basado en su edad de ${new Date().getFullYear() - new Date(fecha).getFullYear()} años",
+  "fase_del_ciclo": "en qué fase específica está dentro de su ciclo actual (expansión/consolidación/cosecha)",
   "ventana": "si este es momento de sembrar, construir o recoger — concreto para ${nombre}",
-  "tension_activa": "qué está siendo activado en ${nombre} ahora que no puede ignorar",
+  "tension_activa": "qué tensión específica está activa en ${nombre} ahora que no puede ignorar",
   "accion_semana": "UNA acción concreta para ${nombre} esta semana alineada con su ciclo",
   "frase": "frase que ubica a ${nombre} donde está y hacia dónde va"
 },
