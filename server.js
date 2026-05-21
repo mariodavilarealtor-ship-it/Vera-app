@@ -218,7 +218,7 @@ Responde con este JSON exacto (sin texto extra, sin backticks):
 console.log("CLAUDE RESPONSE:", texto.slice(0, 1000));
         let perfil;
         try {
-         const textoLimpio = texto.replace(/```json|```|json/gi, "").trim();
+        const textoLimpio = texto.replace(/```json\n?|```/g, "").trim();
 perfil = JSON.parse(textoLimpio);
         } catch(e) {
           res.writeHead(500, { "Content-Type": "application/json" });
