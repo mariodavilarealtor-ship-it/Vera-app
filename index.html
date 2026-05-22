@@ -690,6 +690,7 @@
 
     try {
       const perfil = await callClaudeAPI();
+      console.log("MOMENTO:", JSON.stringify(perfil.momento_actual));
       clearInterval(interval);
       showReport(perfil);
     } catch (err) {
