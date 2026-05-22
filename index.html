@@ -694,8 +694,8 @@
       showReport(perfil);
     } catch (err) {
       clearInterval(interval);
-      const perfil = generateLocalReport();
-      showReport(perfil);
+      alert("ERROR: " + err.message);
+      
     }
   }
 
