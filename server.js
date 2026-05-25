@@ -230,7 +230,7 @@ perfil = JSON.parse(textoLimpio);
         }
 
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(perfil));
+        res.end(JSON.stringify(perfil.perfil || perfil));
 
       } catch(err) {
         res.writeHead(500, { "Content-Type": "application/json" });
