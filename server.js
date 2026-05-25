@@ -223,6 +223,8 @@ console.log("MOMENTO_ACTUAL EN JSON:", texto.slice(idx, idx + 500));
         try {
         const textoLimpio = texto.replace(/```json\n?|```/g, "").trim();
 perfil = JSON.parse(textoLimpio);
+          
+console.log("PERFIL_COMPLETO:", JSON.stringify(perfil).slice(0, 1000));
         } catch(e) {
           res.writeHead(500, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ error: "Parse error", texto: texto.slice(0, 500) }));
