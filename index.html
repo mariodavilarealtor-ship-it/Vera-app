@@ -786,7 +786,7 @@
     const nombre72 = get72Name(day, month, year);
     const quiron = getQuiron(year);
 
-    const response = await fetch('https://vera-app-drg7.onrender.com/api/generate', {
+    const response = await fetch('/api/generate',
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
