@@ -136,9 +136,9 @@ Responde con este JSON exacto (sin texto extra, sin backticks):
     "frase": "cita que resuene con ${nombre}"
   },
   "momento_actual": {
-  "ciclo_de_vida": "en qué gran ciclo vital está ${nombre} ahora (Formación/Construcción/Consolidación) basado en su edad de ${new Date().getFullYear() - new Date(fecha).getFullYear()} años",
-  "fase_del_ciclo": "en qué fase específica está dentro de su ciclo actual (expansión/consolidación/cosecha)",
-  "ventana": "si este es momento de sembrar, construir o recoger — concreto para ${nombre}",
+  "ciclo_de_vida": "OBLIGATORIO: escribe 2 oraciones sobre el ciclo vital de ${nombre} ahora (Formación/Construcción/Consolidación)",
+"fase_del_ciclo": "OBLIGATORIO: escribe 2 oraciones sobre la fase específica dentro de ese ciclo",
+"ventana": "OBLIGATORIO: escribe 2 oraciones sobre la oportunidad concreta que tiene ${nombre} ahora",
   "tension_activa": "qué tensión específica está activa en ${nombre} ahora que no puede ignorar",
   "accion_semana": "UNA acción concreta para ${nombre} esta semana alineada con su ciclo",
   "frase": "frase que ubica a ${nombre} donde está y hacia dónde va"
