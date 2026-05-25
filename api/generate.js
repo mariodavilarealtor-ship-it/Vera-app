@@ -73,5 +73,5 @@ perfil = JSON.parse(texto.replace(/`json|`/g, “”).trim());
 return res.status(500).json({ error: “JSON parse error”, texto_recibido: texto.slice(0, 500) });
 }
 
-return res.status(200).json({ success: true, nombre, ...perfil });
+return res.status(200).json(perfil);
 };
