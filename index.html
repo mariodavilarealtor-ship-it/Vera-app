@@ -991,12 +991,8 @@
 
 <div class="report-section">
         <div class="section-label">Tu Momento Actual</div>
-        
-        <div class="section-body">${data.momento_actual?.descripcion || data.momento_actual || data.tuMomentoActual || ''}</div>
-
-      </div>
-      <div class="report-section">
-        <div class="section-label">Tu Mapa de Lugares</div>
+      
+<div class="section-body">${typeof data.momento_actual==='string'?data.momento_actual:data.momento_actual?.ciclo_de_vida||''}</div>
         ${data.ciudades.map(c => `<div style="display:flex;gap:0.8rem;padding:0.9rem;background:var(--white);border:1px solid var(--gold-light);margin-bottom:0.5rem;align-items:flex-start"><span style="font-size:1.2rem">${c.emoji}</span><div><div style="font-weight:600;font-size:0.85rem;color:var(--ink);margin-bottom:0.2rem">${c.ciudad}</div><div style="font-size:0.8rem;color:var(--stone);line-height:1.5">${c.descripcion}</div></div></div>`).join('')}
       </div>
 
