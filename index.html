@@ -991,8 +991,9 @@
 
 <div class="report-section">
         <div class="section-label">Tu Momento Actual</div>
-        <div class="section-body">${data.tuMomentoActual || data.momento_actual?.descripcion || ""}</div>
-        <div class="dark-box">${data.tuMomentoActual || data.momento_actual?.descripcion || ""}</div>
+        
+        <div class="section-body">${data.momento_actual || data.tuMomentoActual || ''}</div>
+
       </div>
       <div class="report-section">
         <div class="section-label">Tu Mapa de Lugares</div>
