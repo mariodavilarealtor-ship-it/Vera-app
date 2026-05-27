@@ -78,7 +78,7 @@ m.accion_semana,
 m.frase
 ].filter(Boolean).join(' · ');
 }
-
+ 
 // Normalización defensiva — garantiza momento_actual siempre existe
 if (!perfil.momento_actual) {
 perfil.momento_actual =
