@@ -69,18 +69,24 @@ NUNCA uses: astrología, planetas, signos zodiacales, casas astrológicas, Kabba
     const perfil = JSON.parse(limpio);
     if (typeof perfil.momento_actual === 'object' && perfil.momento_actual !== null) {
 const m = perfil.momento_actual;
-perfil.momento_actual = m.ciclo_de_vida || m.fase_del_ciclo || m.descripcion || m.texto || Object.values(m)[0] || '';
+perfil.momento_actual = [
+m.ciclo_de_vida,
+m.fase_del_ciclo,
+m.ventana,
+m.tension_activa,
+m.accion_semana,
+m.frase
+].filter(Boolean).join(' · ');
 }
 
-    // Normalización defensiva — garantiza momento_actual siempre existe
-    if (!perfil.momento_actual) {
-      perfil.momento_actual =
-        perfil.momentoActual ||
-        perfil.tuMomentoActual ||
-        perfil.momento ||
-        "Estás en un momento de transición significativa. Las decisiones que tomes ahora definirán el próximo ciclo de tu vida.";
-    }
-
+// Normalización defensiva — garantiza momento_actual siempre existe
+if (!perfil.momento_actual) {
+perfil.momento_actual =
+perfil.momentoActual ||
+perfil.tuMomentoActual ||
+perfil.momento ||
+"Estás en un momento de transición significativa. Las decisiones que tomes ahora definirán el próximo ciclo de tu vida.";
+}
     return res.status(200).json(perfil);
 
   } catch(err) {
