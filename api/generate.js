@@ -31,7 +31,7 @@ El JSON debe tener EXACTAMENTE estas claves con EXACTAMENTE estos nombres:
   "tres_fuerzas": ["fuerza1", "fuerza2", "fuerza3"],
   "energia": "string - descripción de su energía dominante",
   "proposito": "string - su propósito de vida",
-  "momento_actual": "string - descripción del ciclo vital actual, 3-4 oraciones concretas sobre lo que está viviendo ahora",
+  "momento_actual": "DEBE SER UN STRING. Escribe 3-4 oraciones seguidas describiendo el ciclo vital actual. NO uses sub-claves ni objetos anidados.",
   "practica_diaria": "string - práctica recomendada personalizada",
   "frase_final": "string - frase poderosa personalizada",
   "pregunta_transformadora": "string - pregunta profunda para reflexión",
