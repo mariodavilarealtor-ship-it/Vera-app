@@ -67,6 +67,10 @@ NUNCA uses: astrología, planetas, signos zodiacales, casas astrológicas, Kabba
 
     const limpio = texto.replace(/```json\n?|```/g, "").trim();
     const perfil = JSON.parse(limpio);
+    if (typeof perfil.momento_actual === 'object' && perfil.momento_actual !== null) {
+const m = perfil.momento_actual;
+perfil.momento_actual = m.ciclo_de_vida || m.fase_del_ciclo || m.descripcion || m.texto || Object.values(m)[0] || '';
+}
 
     // Normalización defensiva — garantiza momento_actual siempre existe
     if (!perfil.momento_actual) {
