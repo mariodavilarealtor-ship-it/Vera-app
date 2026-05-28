@@ -786,7 +786,7 @@
     const nombre72 = get72Name(day, month, year);
     const quiron = getQuiron(year);
 
-    const response = await fetch('/api/generate',
+    const response = await fetch('/api/generate',{
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -871,11 +871,8 @@
         transformacion: 'El dinero es energía neutral. La creencia que tienes sobre él determina cómo fluye hacia ti.',
         practica: 'Una vez al día di en voz alta: "El dinero fluye hacia mí fácilmente y con alegría." No como magia — como reentrenamiento neurológico.'
       },
-      momento_actual: {
-        descripcion: 'Estás en un ciclo de claridad — no de crisis. La claridad exige acción.',
-        accion_semana: 'Define una cosa concreta que quieres diferente en 90 días. Escríbela hoy.',
-        frase: '"No necesitas estar listo. Necesitas empezar para estarlo."'
-      },
+      
+momento_actual: 'Estás en un ciclo de claridad — no de crisis. La claridad exige acción. Define una cosa concreta que quieres diferente en 90 días. Escríbela hoy. No necesitas estar listo. Necesitas empezar para estarlo.',
       ciudades: [
         { emoji: '📍', ciudad: `${state.ciudadActual || state.ciudad} — Donde estás`, descripcion: 'Tu base de lanzamiento. Más poderosa de lo que crees.' },
         { emoji: '🥇', ciudad: 'Ciudad de México', descripcion: 'El mercado de desarrollo personal más activo de Latinoamérica.' },
