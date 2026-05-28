@@ -894,7 +894,14 @@ momento_actual: 'Estás en un ciclo de claridad — no de crisis. La claridad ex
       frase_final: 'Ya tienes todo lo que necesitas. El único paso que falta es decidir que hoy es el día.',
       pregunta_transformadora: '¿Qué harías diferente esta semana si supieras que ya eres suficiente — exactamente como eres?'
     };
-  }
+  }function getMomentoActual(momento) {
+if (!momento) return '';
+if (typeof momento === 'string') return momento;
+if (typeof momento === 'object') {
+return [momento.ciclo_de_vida, momento.fase_del_ciclo, momento.ventana, momento.tension_activa, momento.accion_semana, momento.frase].filter(Boolean).join(' ');
+}
+return '';
+}
 
   // ── MOSTRAR REPORTE ──
 
@@ -988,7 +995,7 @@ momento_actual: 'Estás en un ciclo de claridad — no de crisis. La claridad ex
 
 <div class="report-section">
         <div class="section-label">Tu Momento Actual</div>
-      <div class="section-body">${data.momento_actual || ''}</div>
+      <div class="section-body">${getMomentoActual(data.momento_actual)}</div>
       </div>
 
       <div class="report-section">
