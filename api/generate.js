@@ -58,7 +58,7 @@ NUNCA uses: astrología, planetas, signos zodiacales, casas astrológicas, Kabba
         "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         max_tokens: 8000,
         system: "Eres el motor de VER·A. Responde SOLO con JSON puro y válido. Ningún texto adicional. Ningún bloque markdown. Solo el objeto JSON. CRÍTICO: el campo momento_actual debe ser siempre un string de texto corrido, nunca un objeto JSON con subcampos.",
         messages: [{ role: "user", content: prompt }]
