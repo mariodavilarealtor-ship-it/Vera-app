@@ -142,7 +142,7 @@ REGLA ABSOLUTA: momento_actual debe ser texto corrido, nunca un objeto. Los camp
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-6",
-        max_tokens: 8000,
+        max_tokens: 4000,
         system: "Eres el motor de VER·A. Respondes SOLO con JSON puro y válido, sin ningún texto adicional ni bloques markdown. Sigues exactamente la estructura de claves pedida. El campo momento_actual es siempre un string de texto corrido. Los campos de energia son números. Nunca usas la palabra astrología ni términos esotéricos.",
         messages: [{ role: "user", content: prompt }]
       })
