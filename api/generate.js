@@ -40,7 +40,7 @@ return reducir(l.split("").filter(x => !VOCALES.has(x))
 .reduce((a, x) => a + (TABLA_LETRAS[x] || 0), 0));
 }
 const SIGNIFICADOS = {
-
+ 
 1:"Líder. Independencia, iniciativa, voluntad. Reto: el ego, la soledad, la impaciencia.",
 2:"Acompañante. Sensibilidad, cooperación, paz, intuición. Reto: dependencia, miedo al conflicto.",
 3:"Creativo y comunicador. Expresión, alegría, carisma, palabra. Reto: dispersión, superficialidad.",
@@ -86,13 +86,29 @@ let json;
 try { json = JSON.parse(rawText); }
 catch (e) { throw new Error(`No-JSON de ${endpoint}: ${rawText.slice(0, 300)}`); }
 return json.data || json; // birth-angels/tikkun anidan en .data; la carta no
-
+ 
 }
 function armarSubject(nombre, anio, mes, dia, horaH, horaM, ciudad, paisCodigo) {
 return { subject: { name: nombre, birth_data: {
 year: anio, month: mes, day: dia, hour: horaH, minute: horaM, second: 0,
 city: ciudad, country_code: paisCodigo.toUpperCase()
 }}};
+}
+// ════════════════════════════════════════════════════════════
+// BLOQUE C1b — Guardar registro en Google Sheets (no crítico)
+// ════════════════════════════════════════════════════════════
+const SHEETS_URL = "https://script.google.com/macros/s/AKfycbzLTbID_o5XiQLOrdm8d2D5wodxoXJh03EuJHZICqf1qmNOPhyPXlBcWEcCoFHX8OZQaw/exec";
+async function guardarEnHoja(datos) {
+try {
+await fetch(SHEETS_URL, {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify(datos)
+});
+} catch (e) {
+// Si falla el guardado, NO rompe la generación del perfil.
+console.error("No se pudo guardar en la hoja:", e.message);
+}
 }
 // ════════════════════════════════════════════════════════════
 // BLOQUE C2 — Procesar la carta natal
@@ -131,7 +147,7 @@ if (el && conteo.hasOwnProperty(el)) conteo[el]++;
 let debil = "Fire", fuerte = "Fire";
 for (const el of ["Fire","Earth","Air","Water"]) {
 if (conteo[el] < conteo[debil]) debil = el;
-
+ 
 if (conteo[el] > conteo[fuerte]) fuerte = el;
 }
 const listaFuerzas = [];
@@ -178,7 +194,7 @@ recurso_meaning: sec.meaning || "",
 recurso_qualities: sec.qualities || []
 };
 }
-
+ 
 function procesarTikkun(t) {
 const z = t.zodiac || {}; // método correcto = zodiac
 return {
@@ -224,7 +240,7 @@ debil:"la claridad mental y la palabra: esa capacidad de ordenar las ideas y com
 Water: { fuerte:"la hondura y la sensibilidad: la profundidad emocional, la intuición, la conexión con tu mundo interno",
 debil:"la hondura y la conexión emocional: esa capacidad de sentir profundo y escuchar tu mundo interno" }
 };
-
+ 
 const EFECTO_DEBIL = {
 Fire:"te cuesta arrancar, postergas, esperas a tener ganas en vez de generar el movimiento",
 Earth:"te dispersas, dejas cosas a medio terminar, te cuesta bajar las ideas a la realidad y sostener una rutina",
@@ -271,7 +287,7 @@ notas.push("Decide desde el corazón: las emociones y los valores pesan más que
 } else if (p2 === "razon") {
 if (conteo.Water >= 3 && conteo.Water >= conteo.Air)
 notas.push("IMPORTANTE: aunque tiene un mundo emocional profundo, él mismo dice que decide desde la razón. Esto manda: describe a alguien que siente hondo pero se apoya en la lógica para decidir, quizá conteniendo la emoción más de lo que necesita.");
-
+ 
 else
 notas.push("Decide desde la razón: se apoya en la lógica y el análisis antes que en la emoción.");
 }
@@ -309,7 +325,7 @@ REGLAS ABSOLUTAS DE LENGUAJE (jamás se rompen):
 NUNCA uses, ni una sola vez, ninguna de estas palabras ni equivalentes: planeta, signo, casa, carta natal, astrología, horóscopo, zodíaco, ascendente, Quirón, nodo, Kabbalah, tránsito, retrógrado, grado, Tauro/Leo/etc., elemento astrológico, chakra, energía cósmica, ángel, nombre hebreo, salmo, tarot, número, numerología.
 REGLA CRÍTICA SOBRE LAS CUATRO ENERGÍAS: jamás uses Fuego/Tierra/Aire/Agua como un sistema de categorías. Prohibido escribir "tu patrón de Fuego" o "tu energía dominante es Aire". Describe a la persona con palabras humanas y emocionales normales (impulso, chispa, base, raíz, mente, claridad, hondura, emoción, intuición). Puedes usar "fuego" o "raíz" sueltos como metáfora, pero nunca enumerarlos como clasificación. La persona NUNCA debe poder adivinar que detrás hay un cálculo. Debe sentir que alguien la conoce profundamente.
 TONO: cercano, directo, cálido pero sin adular. Tuteas. Frases dichas por alguien que te mira a los ojos. Nada de palabrería de autoayuda vacía. Cada afirmación se sostiene en algo concreto y apunta a una acción o toma de conciencia. Prohibido el relleno y los lugares comunes.`;
-
+ 
 function bloqueAutorreporte(autorreporte) {
 if (!autorreporte) return "";
 return `\n\nLO QUE LA PERSONA REPORTA DE SÍ MISMA (esto tiene PRIORIDAD: si contradice cualquier otro dato, gana lo que la persona dice de sí misma): ${autorreporte}`;
@@ -346,7 +362,7 @@ Su herida original y su don: ${vera.herida_traducida}
 Aquello para lo que vino: ${vera.mision_traducida}${auto}
 ESCRIBE EL RETRATO EN ESTAS SECCIONES, en este orden exacto, con estos títulos:
 1. Quién eres de verdad — retrato de su identidad profunda desde su fuerza central de identidad (grado y área) y cómo se proyecta. Que se reconozca en las primeras líneas. Nómbrale algo cierto y específico que pocos le han dicho.
-
+ 
 2. Lo valioso que ya vive en ti — sus virtudes reales, de sus fuerzas mejor ubicadas. No las elogies en abstracto: dile para qué le sirven, dónde ya las usa sin notarlo, cómo apoyarse más en ellas.
 3. Lo que te está frenando — su debilidad real, anclada en lo que le falta cultivar. Con cariño pero sin rodeos. Y entrega de inmediato 2-3 prácticas CONCRETAS (acciones pequeñas, hábitos, reencuadres, anclas) para fortalecer justo eso. Dile cómo, paso a paso.
 4. Tu herida y tu mayor poder — dónde le ha dolido históricamente y cómo esa misma herida, trabajada, se vuelve su don más fuerte. Cierra con una práctica concreta de transformación.
@@ -383,7 +399,7 @@ Cuando la vida pesa — con honestidad: habrá días en que se sienta lejos de s
 Tu recordatorio — una sola frase potente, en segunda persona, que pueda repetirse cualquier día para volver a su frecuencia.
 Ni una palabra prohibida. Todo apoyado en los datos reales. Cierre que dé una brújula, no una etiqueta.`
 };
-
+ 
 prompts.equilibrio = {
 system: SYSTEM_BASE + `
 ESTE ES EL MÓDULO MÁS PRÁCTICO de VER·A: "manos a la obra". Aquí no se filosofa largo: se diagnostica rápido y se entregan herramientas concretas que la persona puede hacer HOY. Frases cortas, directas, accionables. La persona termina sabiendo exactamente qué hacer, no solo qué le pasa.`,
@@ -418,7 +434,7 @@ Tu primera prueba — UNA práctica concreta de transformación para esta semana
 DIRECTO, frases con peso. Persuasivo de verdad: el escéptico debe terminar con ganas de probar. La herida se nombra sin crueldad pero sin esquivar. Ni una palabra prohibida. Cierre que empuje a ACTUAR.`
 };
 prompts.momento_actual = {
-
+ 
 system: SYSTEM_BASE + `
 ESTE MÓDULO ES CORTO y debe SORPRENDER. Habla del momento de vida que atraviesa la persona con REALISMO + OPTIMISMO ACTIVO. Muchas personas viven momentos duros: no los endulces ni los niegues (sería falso y lo notaría). Pero muestra, sin excepción, que cada etapa —incluso la difícil— trae un aprendizaje concreto que se puede aprovechar AHORA. La sorpresa es clave: que vea su momento desde un ángulo que no esperaba. No "todo estará bien" (tibio), sino "esto que vives, por duro que sea, es exactamente la etapa donde puedes X". Encarna a Dispenza: cada momento, incluso el de crisis, es oportunidad de cambio.`,
 user: `Escribe el módulo CORTO "Tu Momento Actual" para ${nombre}. Pocos párrafos. Que sorprenda.
@@ -453,7 +469,7 @@ return prompts;
 const CLAUDE_MODEL = "claude-sonnet-4-6";
 async function llamarClaude(systemPrompt, userPrompt, claudeKey) {
 const res = await fetch("https://api.anthropic.com/v1/messages", {
-
+ 
 method: "POST",
 headers: {
 "Content-Type": "application/json",
@@ -498,7 +514,7 @@ let body;
 try {
 body = await new Promise((resolve, reject) => {
 let raw = "";
-
+ 
 req.on("data", chunk => { raw += chunk; });
 req.on("end", () => { try { resolve(JSON.parse(raw)); } catch (e) { reject(e); } });
 req.on("error", reject);
@@ -510,7 +526,8 @@ const {
 nombre, nombreCompleto, email,
 fecha, ciudad, paisCodigo,
 hora, franja, horaConocida,
-p1, p2, p3, p4
+p1, p2, p3, p4,
+consentimiento, pago
 } = body;
 const CLAUDE_KEY = process.env.ANTHROPIC_API_KEY;
 const ASTRO_KEY = process.env.ASTROLOGY_API_KEY;
@@ -539,7 +556,7 @@ const [cartaRaw, angelesRaw, tikkunRaw] = await Promise.all([
 llamarAstrologyAPI("/api/v3/charts/natal", subject, ASTRO_KEY),
 llamarAstrologyAPI("/api/v3/kabbalah/birth-angels", subject, ASTRO_KEY),
 llamarAstrologyAPI("/api/v3/kabbalah/tikkun", subject, ASTRO_KEY)
-
+ 
 ]);
 // C2/C3/C4 — procesar
 const carta = procesarCartaNatal(cartaRaw);
@@ -553,6 +570,18 @@ const vera = traducirAVerA(carta, frecuencia, tikkun, fase, esencia, autorreport
 // E2/E1 — armar los 7 prompts y generarlos en paralelo
 const prompts = construirPrompts(nombre, carta, vera);
 const modulos = await generarSieteModulos(prompts, CLAUDE_KEY);
+// Guardar registro en la hoja (no bloquea ni rompe si falla)
+guardarEnHoja({
+nombre: nombreCompleto || nombre || "",
+nombreCompleto: nombreCompleto || "",
+email: email || "",
+fecha: fecha || "",
+ciudad: ciudad || "",
+pais: paisCodigo || "",
+hora: horaConocida && hora ? hora : (franja || ""),
+consentimiento: consentimiento || "",
+pago: pago || "No"
+});
 const avisoFranja = usoFranja
 ? "Este perfil se calculó con una franja horaria aproximada. Con tu hora exacta de nacimiento podemos afinarlo aún más."
 : null;
