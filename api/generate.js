@@ -585,8 +585,9 @@ const vera = traducirAVerA(carta, frecuencia, tikkun, fase, esencia, autorreport
 // E2/E1 — armar los 7 prompts y generarlos en paralelo
 const prompts = construirPrompts(nombre, carta, vera);
 const modulos = await generarSieteModulos(prompts, CLAUDE_KEY);
-// Guardar registro en la hoja (no bloquea ni rompe si falla)
-guardarEnHoja({
+// Guardar registro en la hoja ANTES de responder (con await), para que Vercel
+// no apague la función serverless antes de que el fetch a Google Sheets termine.
+await guardarEnHoja({
 nombre: nombreCompleto || nombre || "",
 nombreCompleto: nombreCompleto || "",
 email: email || "",
@@ -605,4 +606,3 @@ return res.status(200).json({ nombre, modulos, avisoFranja });
 return res.status(500).json({ error: "Error generando perfil: " + err.message });
 }
 };
- 
