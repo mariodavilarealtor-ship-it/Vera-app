@@ -1,4 +1,3 @@
-
 // ============================================================
 // VER·A — generate.js (motor del Perfil VER·A, 7 módulos)
 // Reescritura completa. Backend llama al API real + numerología.
@@ -114,11 +113,11 @@ language: "en"
 const SHEETS_URL = "https://script.google.com/macros/s/AKfycbzLTbID_o5XiQLOrdm8d2D5wodxoXJh03EuJHZICqf1qmNOPhyPXlBcWEcCoFHX8OZQaw/exec";
 async function guardarEnHoja(datos) {
 try {
-await fetch(SHEETS_URL, {
-method: "POST",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify(datos)
-});
+// Apps Script responde a POST con un redirect 302 que convierte el POST en GET
+// y pierde el body. Por eso enviamos los datos como GET en el parámetro 'payload':
+// llegan en la primera petición, antes del redirect, y el doGet los guarda.
+const url = SHEETS_URL + "?payload=" + encodeURIComponent(JSON.stringify(datos));
+await fetch(url, { method: "GET" });
 } catch (e) {
 // Si falla el guardado, NO rompe la generación del perfil.
 console.error("No se pudo guardar en la hoja:", e.message);
@@ -338,7 +337,8 @@ Tu marco intelectual (nunca lo nombras, pero lo encarnas): Joe Dispenza (puede c
 REGLAS ABSOLUTAS DE LENGUAJE (jamás se rompen):
 NUNCA uses, ni una sola vez, ninguna de estas palabras ni equivalentes: planeta, signo, casa, carta natal, astrología, horóscopo, zodíaco, ascendente, Quirón, nodo, Kabbalah, tránsito, retrógrado, grado, Tauro/Leo/etc., elemento astrológico, chakra, energía cósmica, ángel, nombre hebreo, salmo, tarot, número, numerología.
 REGLA CRÍTICA SOBRE LAS CUATRO ENERGÍAS: jamás uses Fuego/Tierra/Aire/Agua como un sistema de categorías. Prohibido escribir "tu patrón de Fuego" o "tu energía dominante es Aire". Describe a la persona con palabras humanas y emocionales normales (impulso, chispa, base, raíz, mente, claridad, hondura, emoción, intuición). Puedes usar "fuego" o "raíz" sueltos como metáfora, pero nunca enumerarlos como clasificación. La persona NUNCA debe poder adivinar que detrás hay un cálculo. Debe sentir que alguien la conoce profundamente.
-TONO: cercano, directo, cálido pero sin adular. Tuteas. Frases dichas por alguien que te mira a los ojos. Nada de palabrería de autoayuda vacía. Cada afirmación se sostiene en algo concreto y apunta a una acción o toma de conciencia. Prohibido el relleno y los lugares comunes.`;
+TONO: cercano, directo, cálido pero sin adular. Tuteas. Frases dichas por alguien que te mira a los ojos. Nada de palabrería de autoayuda vacía. Cada afirmación se sostiene en algo concreto y apunta a una acción o toma de conciencia. Prohibido el relleno y los lugares comunes.
+VARIANTE DE ESPAÑOL (OBLIGATORIO): escribe SIEMPRE en español neutro internacional. Usa "tú" (tú eres, tú tienes, contigo). PROHIBIDO el voseo y cualquier regionalismo: nunca uses "vos", "tenés", "sos", "querés", "podés", "andá", "mirá", "che", ni conjugaciones voseantes. Evita también localismos de cualquier país. El texto debe sonar natural para cualquier hispanohablante, sin que se note de qué región es.`;
  
 function bloqueAutorreporte(autorreporte) {
 if (!autorreporte) return "";
@@ -605,3 +605,4 @@ return res.status(200).json({ nombre, modulos, avisoFranja });
 return res.status(500).json({ error: "Error generando perfil: " + err.message });
 }
 };
+ 
