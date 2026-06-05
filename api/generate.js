@@ -1,3 +1,4 @@
+
 // ============================================================
 // VER·A — generate.js (motor del Perfil VER·A, 7 módulos)
 // Reescritura completa. Backend llama al API real + numerología.
@@ -93,6 +94,19 @@ return { subject: { name: nombre, birth_data: {
 year: anio, month: mes, day: dia, hour: horaH, minute: horaM, second: 0,
 city: ciudad, country_code: paisCodigo.toUpperCase()
 }}};
+}
+// NUEVO: los endpoints de kabbalah piden birth_data en la raíz, sin "subject".
+// (Confirmado en el Playground de astrology-api.io: birth_data + include_* + language en el nivel raíz.)
+function armarKabbalah(anio, mes, dia, horaH, horaM, ciudad, paisCodigo) {
+return {
+birth_data: {
+year: anio, month: mes, day: dia, hour: horaH, minute: horaM, second: 0,
+city: ciudad, country_code: paisCodigo.toUpperCase()
+},
+include_secondary: true,
+include_tertiary: false,
+language: "en"
+};
 }
 // ════════════════════════════════════════════════════════════
 // BLOQUE C1b — Guardar registro en Google Sheets (no crítico)
@@ -550,12 +564,13 @@ const [horaH, horaM] = horaCalculo.split(":").map(Number);
 try {
 // B — numerología (cero API)
 const esencia = calcularEsencia(nombreCompleto, dia, mes, anio);
-// C1 — armar subject + 3 llamadas al API en paralelo
+// C1 — armar payloads + 3 llamadas al API en paralelo
 const subject = armarSubject(nombre, anio, mes, dia, horaH, horaM, ciudad, paisCodigo);
+const kabbalah = armarKabbalah(anio, mes, dia, horaH, horaM, ciudad, paisCodigo);
 const [cartaRaw, angelesRaw, tikkunRaw] = await Promise.all([
 llamarAstrologyAPI("/api/v3/charts/natal", subject, ASTRO_KEY),
-llamarAstrologyAPI("/api/v3/kabbalah/birth-angels", subject, ASTRO_KEY),
-llamarAstrologyAPI("/api/v3/kabbalah/tikkun", subject, ASTRO_KEY)
+llamarAstrologyAPI("/api/v3/kabbalah/birth-angels", kabbalah, ASTRO_KEY),
+llamarAstrologyAPI("/api/v3/kabbalah/tikkun", kabbalah, ASTRO_KEY)
  
 ]);
 // C2/C3/C4 — procesar
