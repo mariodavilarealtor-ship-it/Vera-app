@@ -40,7 +40,7 @@ return reducir(l.split("").filter(x => !VOCALES.has(x))
 .reduce((a, x) => a + (TABLA_LETRAS[x] || 0), 0));
 }
 const SIGNIFICADOS = {
- 
+
 1:"Líder. Independencia, iniciativa, voluntad. Reto: el ego, la soledad, la impaciencia.",
 2:"Acompañante. Sensibilidad, cooperación, paz, intuición. Reto: dependencia, miedo al conflicto.",
 3:"Creativo y comunicador. Expresión, alegría, carisma, palabra. Reto: dispersión, superficialidad.",
@@ -86,7 +86,7 @@ let json;
 try { json = JSON.parse(rawText); }
 catch (e) { throw new Error(`No-JSON de ${endpoint}: ${rawText.slice(0, 300)}`); }
 return json.data || json; // birth-angels/tikkun anidan en .data; la carta no
- 
+
 }
 function armarSubject(nombre, anio, mes, dia, horaH, horaM, ciudad, paisCodigo) {
 return { subject: { name: nombre, birth_data: {
@@ -160,7 +160,7 @@ if (el && conteo.hasOwnProperty(el)) conteo[el]++;
 let debil = "Fire", fuerte = "Fire";
 for (const el of ["Fire","Earth","Air","Water"]) {
 if (conteo[el] < conteo[debil]) debil = el;
- 
+
 if (conteo[el] > conteo[fuerte]) fuerte = el;
 }
 const listaFuerzas = [];
@@ -207,7 +207,7 @@ recurso_meaning: sec.meaning || "",
 recurso_qualities: sec.qualities || []
 };
 }
- 
+
 function procesarTikkun(t) {
 const z = t.zodiac || {}; // método correcto = zodiac
 return {
@@ -253,7 +253,7 @@ debil:"la claridad mental y la palabra: esa capacidad de ordenar las ideas y com
 Water: { fuerte:"la hondura y la sensibilidad: la profundidad emocional, la intuición, la conexión con tu mundo interno",
 debil:"la hondura y la conexión emocional: esa capacidad de sentir profundo y escuchar tu mundo interno" }
 };
- 
+
 const EFECTO_DEBIL = {
 Fire:"te cuesta arrancar, postergas, esperas a tener ganas en vez de generar el movimiento",
 Earth:"te dispersas, dejas cosas a medio terminar, te cuesta bajar las ideas a la realidad y sostener una rutina",
@@ -300,7 +300,7 @@ notas.push("Decide desde el corazón: las emociones y los valores pesan más que
 } else if (p2 === "razon") {
 if (conteo.Water >= 3 && conteo.Water >= conteo.Air)
 notas.push("IMPORTANTE: aunque tiene un mundo emocional profundo, él mismo dice que decide desde la razón. Esto manda: describe a alguien que siente hondo pero se apoya en la lógica para decidir, quizá conteniendo la emoción más de lo que necesita.");
- 
+
 else
 notas.push("Decide desde la razón: se apoya en la lógica y el análisis antes que en la emoción.");
 }
@@ -338,17 +338,31 @@ REGLAS ABSOLUTAS DE LENGUAJE (jamás se rompen):
 NUNCA uses, ni una sola vez, ninguna de estas palabras ni equivalentes: planeta, signo, casa, carta natal, astrología, horóscopo, zodíaco, ascendente, Quirón, nodo, Kabbalah, tránsito, retrógrado, grado, Tauro/Leo/etc., elemento astrológico, chakra, energía cósmica, ángel, nombre hebreo, salmo, tarot, número, numerología.
 REGLA CRÍTICA SOBRE LAS CUATRO ENERGÍAS: jamás uses Fuego/Tierra/Aire/Agua como un sistema de categorías. Prohibido escribir "tu patrón de Fuego" o "tu energía dominante es Aire". Describe a la persona con palabras humanas y emocionales normales (impulso, chispa, base, raíz, mente, claridad, hondura, emoción, intuición). Puedes usar "fuego" o "raíz" sueltos como metáfora, pero nunca enumerarlos como clasificación. La persona NUNCA debe poder adivinar que detrás hay un cálculo. Debe sentir que alguien la conoce profundamente.
 TONO: cercano, directo, cálido pero sin adular. Tuteas. Frases dichas por alguien que te mira a los ojos. Nada de palabrería de autoayuda vacía. Cada afirmación se sostiene en algo concreto y apunta a una acción o toma de conciencia. Prohibido el relleno y los lugares comunes.
-VARIANTE DE ESPAÑOL (OBLIGATORIO): escribe SIEMPRE en español neutro internacional. Usa "tú" (tú eres, tú tienes, contigo). PROHIBIDO el voseo y cualquier regionalismo: nunca uses "vos", "tenés", "sos", "querés", "podés", "andá", "mirá", "che", ni conjugaciones voseantes. Evita también localismos de cualquier país. El texto debe sonar natural para cualquier hispanohablante, sin que se note de qué región es.`;
- 
+VARIANTE DE ESPAÑOL (OBLIGATORIO): escribe SIEMPRE en español neutro internacional. Usa "tú" (tú eres, tú tienes, contigo). PROHIBIDO el voseo y cualquier regionalismo: nunca uses "vos", "tenés", "sos", "querés", "podés", "andá", "mirá", "che", ni conjugaciones voseantes. Evita también localismos de cualquier país. El texto debe sonar natural para cualquier hispanohablante, sin que se note de qué región es.
+PROHIBIDO MENCIONAR GRADOS O NÚMEROS DE CÁLCULO (CRÍTICO): aunque en los datos recibas grados, posiciones o cifras (por ejemplo "grado 18.2", "4.2", "27.8"), esos números son SOLO para tu uso interno, para afinar y matizar la lectura. JAMÁS los escribas ni los menciones en el texto. PROHIBIDO escribir la palabra "grado", "grados", o cualquier número decimal de posición. El usuario nunca debe percibir que hay un cálculo detrás: en vez de "desde un grado profundo de 18.2", escribe algo humano como "desde un lugar maduro y con dirección". Traduce siempre el dato a lenguaje emocional, nunca lo expongas como número.
+GÉNERO NEUTRO (OBLIGATORIO): NO conoces el género de la persona. Por tanto, NUNCA uses adjetivos, participios ni sustantivos marcados en masculino o femenino para referirte a ella (nada de "articulado/articulada", "seguro/segura", "tú mismo/tú misma", "él/ella"). Reformula siempre en neutro: usa sustantivos sin género ("tu seguridad", "tu claridad", "tu manera de articular"), construcciones con "tú" + verbo ("hablas con claridad" en vez de "eres articulado"), o expresiones como "tú, tal como eres". Si necesitas referirte a la persona por su nombre, úsalo tal cual sin artículo ("Melissa", nunca "el Melissa" ni "la Melissa"). Revisa cada frase: si un adjetivo delata género, reescríbela.`;
+
 function bloqueAutorreporte(autorreporte) {
 if (!autorreporte) return "";
 return `\n\nLO QUE LA PERSONA REPORTA DE SÍ MISMA (esto tiene PRIORIDAD: si contradice cualquier otro dato, gana lo que la persona dice de sí misma): ${autorreporte}`;
 }
+// Convierte un grado (0-30 dentro de su segmento) en una etiqueta de MADUREZ en
+// texto, para que el modelo reciba el matiz SIN ver nunca el número. Así es
+// imposible que un grado se filtre al texto final.
+function matizDeGrado(grado) {
+  const g = Number(grado);
+  if (isNaN(g)) return "con su propio matiz";
+  if (g < 8)  return "en sus inicios, con frescura y energía nueva";
+  if (g < 16) return "desarrollándose, ganando forma y dirección";
+  if (g < 24) return "en un punto maduro, que ya sabe lo que quiere";
+  return "en plenitud, asentado y con autoridad propia";
+}
+
 function construirPrompts(nombre, carta, vera) {
 const auto = bloqueAutorreporte(vera.autorreporte);
 const listaFuerzas = carta.listaFuerzas.map(f => {
 const modo = f.reflexivo ? ", en modo reflexivo (mira hacia adentro)" : "";
-return `- ${f.etiqueta}: grado ${f.grado}, se activa en ${f.area}${modo}`;
+return `- ${f.etiqueta}: ${matizDeGrado(f.grado)}, se activa en ${f.area}${modo}`;
 }).join("\n");
 // Tabla de frecuencias por elemento débil (la maneja el código).
 // MARIO: pega aquí las URLs reales de tu canal cuando tengas los videos.
@@ -363,20 +377,20 @@ const linkTexto = frec.link ? `Puedes escucharla aquí: ${frec.link}` : `Estará
 const prompts = {};
 prompts.retrato = {
 system: SYSTEM_BASE,
-user: `Genera el retrato VER·A de ${nombre} usando EXCLUSIVAMENTE los datos reales de abajo. No inventes posiciones ni rasgos: todo lo que afirmes debe poder rastrearse a un dato de esta lista. Usa los grados y las áreas exactas para afinar la lectura: una misma fuerza dice cosas distintas según el grado y el área donde cae. Esa precisión es lo que hace valioso a VER·A.
+user: `Genera el retrato VER·A de ${nombre} usando EXCLUSIVAMENTE los datos reales de abajo. No inventes posiciones ni rasgos: todo lo que afirmes debe poder rastrearse a un dato de esta lista. Los grados y las áreas son para afinar tu lectura INTERNAMENTE: una misma fuerza dice cosas distintas según el grado y el área donde cae, y debes usar esa precisión para matizar lo que escribes. PERO JAMÁS escribas los grados ni los números en el texto: el usuario nunca debe ver una cifra. Traduce el grado a matiz humano (por ejemplo, un grado alto puede leerse como "algo maduro, que ya sabe lo que quiere"; uno bajo como "algo que está en sus inicios, con frescura"). Esa traducción invisible es lo que hace valioso a VER·A.
 DATOS REALES DE ${nombre}:
-Sus fuerzas internas (cada una con el grado exacto, el área de vida donde se activa, y si va en modo reflexivo):
+Sus fuerzas internas (cada una con su matiz de madurez, el área de vida donde se activa, y si va en modo reflexivo):
 ${listaFuerzas}
-Cómo se proyecta al mundo: grado ${carta.ascendente.grado}
-Su lugar público / misión visible: grado ${carta.medioCielo.grado}, en ${carta.medioCielo.area}
+Cómo se proyecta al mundo: ${matizDeGrado(carta.ascendente.grado)}
+Su lugar público / misión visible: ${matizDeGrado(carta.medioCielo.grado)}, en ${carta.medioCielo.area}
 Su balance interno (ya traducido a lenguaje humano; NO lo nombres como categorías):
 Lo que más le sobra: ${vera.fortaleza_descrita}
 Lo que le falta cultivar: ${vera.debilidad_descrita}
 Su herida original y su don: ${vera.herida_traducida}
 Aquello para lo que vino: ${vera.mision_traducida}${auto}
 ESCRIBE EL RETRATO EN ESTAS SECCIONES, en este orden exacto, con estos títulos:
-1. Quién eres de verdad — retrato de su identidad profunda desde su fuerza central de identidad (grado y área) y cómo se proyecta. Que se reconozca en las primeras líneas. Nómbrale algo cierto y específico que pocos le han dicho.
- 
+1. Quién eres de verdad — retrato de su identidad profunda desde su fuerza central de identidad (su matiz y su área) y cómo se proyecta. Que se reconozca en las primeras líneas. Nómbrale algo cierto y específico que pocos le han dicho.
+
 2. Lo valioso que ya vive en ti — sus virtudes reales, de sus fuerzas mejor ubicadas. No las elogies en abstracto: dile para qué le sirven, dónde ya las usa sin notarlo, cómo apoyarse más en ellas.
 3. Lo que te está frenando — su debilidad real, anclada en lo que le falta cultivar. Con cariño pero sin rodeos. Y entrega de inmediato 2-3 prácticas CONCRETAS (acciones pequeñas, hábitos, reencuadres, anclas) para fortalecer justo eso. Dile cómo, paso a paso.
 4. Tu herida y tu mayor poder — dónde le ha dolido históricamente y cómo esa misma herida, trabajada, se vuelve su don más fuerte. Cierra con una práctica concreta de transformación.
@@ -413,7 +427,7 @@ Cuando la vida pesa — con honestidad: habrá días en que se sienta lejos de s
 Tu recordatorio — una sola frase potente, en segunda persona, que pueda repetirse cualquier día para volver a su frecuencia.
 Ni una palabra prohibida. Todo apoyado en los datos reales. Cierre que dé una brújula, no una etiqueta.`
 };
- 
+
 prompts.equilibrio = {
 system: SYSTEM_BASE + `
 ESTE ES EL MÓDULO MÁS PRÁCTICO de VER·A: "manos a la obra". Aquí no se filosofa largo: se diagnostica rápido y se entregan herramientas concretas que la persona puede hacer HOY. Frases cortas, directas, accionables. La persona termina sabiendo exactamente qué hacer, no solo qué le pasa.`,
@@ -448,7 +462,7 @@ Tu primera prueba — UNA práctica concreta de transformación para esta semana
 DIRECTO, frases con peso. Persuasivo de verdad: el escéptico debe terminar con ganas de probar. La herida se nombra sin crueldad pero sin esquivar. Ni una palabra prohibida. Cierre que empuje a ACTUAR.`
 };
 prompts.momento_actual = {
- 
+
 system: SYSTEM_BASE + `
 ESTE MÓDULO ES CORTO y debe SORPRENDER. Habla del momento de vida que atraviesa la persona con REALISMO + OPTIMISMO ACTIVO. Muchas personas viven momentos duros: no los endulces ni los niegues (sería falso y lo notaría). Pero muestra, sin excepción, que cada etapa —incluso la difícil— trae un aprendizaje concreto que se puede aprovechar AHORA. La sorpresa es clave: que vea su momento desde un ángulo que no esperaba. No "todo estará bien" (tibio), sino "esto que vives, por duro que sea, es exactamente la etapa donde puedes X". Encarna a Dispenza: cada momento, incluso el de crisis, es oportunidad de cambio.`,
 user: `Escribe el módulo CORTO "Tu Momento Actual" para ${nombre}. Pocos párrafos. Que sorprenda.
@@ -483,7 +497,7 @@ return prompts;
 const CLAUDE_MODEL = "claude-sonnet-4-6";
 async function llamarClaude(systemPrompt, userPrompt, claudeKey) {
 const res = await fetch("https://api.anthropic.com/v1/messages", {
- 
+
 method: "POST",
 headers: {
 "Content-Type": "application/json",
@@ -528,7 +542,7 @@ let body;
 try {
 body = await new Promise((resolve, reject) => {
 let raw = "";
- 
+
 req.on("data", chunk => { raw += chunk; });
 req.on("end", () => { try { resolve(JSON.parse(raw)); } catch (e) { reject(e); } });
 req.on("error", reject);
@@ -571,7 +585,7 @@ const [cartaRaw, angelesRaw, tikkunRaw] = await Promise.all([
 llamarAstrologyAPI("/api/v3/charts/natal", subject, ASTRO_KEY),
 llamarAstrologyAPI("/api/v3/kabbalah/birth-angels", kabbalah, ASTRO_KEY),
 llamarAstrologyAPI("/api/v3/kabbalah/tikkun", kabbalah, ASTRO_KEY)
- 
+
 ]);
 // C2/C3/C4 — procesar
 const carta = procesarCartaNatal(cartaRaw);
