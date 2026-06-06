@@ -2,6 +2,7 @@
 // VER·A — generate.js (motor del Perfil VER·A, 7 módulos)
 // Reescritura completa. Backend llama al API real + numerología.
 // Modelo de redacción: claude-sonnet-4-6 · 1 llamada por módulo.
+// + Envío del perfil por email vía Resend (activo solo con pago === "Si").
 // ============================================================
 // ════════════════════════════════════════════════════════════
 // BLOQUE B — Numerología "Tu Esencia" (cero API, en código)
@@ -122,6 +123,152 @@ await fetch(url, { method: "GET" });
 // Si falla el guardado, NO rompe la generación del perfil.
 console.error("No se pudo guardar en la hoja:", e.message);
 }
+}
+// ════════════════════════════════════════════════════════════
+// BLOQUE C1c — Envío del perfil por email vía Resend (no crítico)
+// Se activa SOLO cuando el pago está confirmado (pago === "Si").
+// Si el envío falla, NUNCA rompe la generación ni la entrega del perfil.
+// ════════════════════════════════════════════════════════════
+const RESEND_URL = "https://api.resend.com/emails";
+const EMAIL_REMITENTE = "VER·A <ver.a@ver-a.life>";
+const EMAIL_BCC = "mariodavilarealtor@gmail.com"; // copia oculta para archivar cada perfil
+
+// Redes de marca (clicables en el correo). Para agregar Facebook luego,
+// descomenta su línea y pon la URL real.
+const REDES = [
+  { nombre: "YouTube",   url: "https://www.youtube.com/@VER-A-q6z" },
+  { nombre: "Instagram", url: "https://www.instagram.com/ver.a.life" },
+  { nombre: "TikTok",    url: "https://www.tiktok.com/@ver.a.life" }
+  // { nombre: "Facebook", url: "https://www.facebook.com/____" },
+];
+
+// --- Mini conversor Markdown -> HTML (títulos, párrafos, negritas, links) ---
+function escaparHtml(s) {
+  return (s || "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+function inlineMd(linea) {
+  let h = escaparHtml(linea).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  h = h.replace(/(https?:\/\/[^\s<]+)/g,
+    '<a href="$1" style="color:#b8860b;text-decoration:underline;">$1</a>');
+  return h;
+}
+function markdownAHtml(texto) {
+  const lineas = (texto || "").split("\n");
+  let html = "", enLista = false;
+  for (let cruda of lineas) {
+    const linea = cruda.trim();
+    if (!linea) { if (enLista) { html += "</ul>"; enLista = false; } continue; }
+    if (/^---+$/.test(linea)) {
+      if (enLista) { html += "</ul>"; enLista = false; }
+      html += '<hr style="border:none;border-top:1px solid #e7ddc9;margin:22px 0;">';
+      continue;
+    }
+    const t = linea.match(/^(#{1,3})\s+(.*)$/);
+    if (t) {
+      if (enLista) { html += "</ul>"; enLista = false; }
+      const txt = inlineMd(t[2]);
+      html += `<h3 style="font-family:Georgia,'Times New Roman',serif;color:#2b2b2b;font-size:19px;margin:24px 0 8px;">${txt}</h3>`;
+      continue;
+    }
+    const li = linea.match(/^[-*]\s+(.*)$/);
+    if (li) {
+      if (!enLista) { html += '<ul style="margin:8px 0 8px 18px;padding:0;">'; enLista = true; }
+      html += `<li style="margin:4px 0;line-height:1.6;">${inlineMd(li[1])}</li>`;
+      continue;
+    }
+    const ol = linea.match(/^\d+\.\s+(.*)$/);
+    if (ol) {
+      html += `<p style="margin:8px 0;line-height:1.7;"><strong>${inlineMd(ol[1])}</strong></p>`;
+      continue;
+    }
+    if (enLista) { html += "</ul>"; enLista = false; }
+    html += `<p style="margin:10px 0;line-height:1.7;color:#333;">${inlineMd(linea)}</p>`;
+  }
+  if (enLista) html += "</ul>";
+  return html;
+}
+
+const TITULOS_MODULOS = {
+  retrato:         "Tu Retrato",
+  esencia:         "Tu Esencia",
+  frecuencia:      "Tu Frecuencia de Origen",
+  equilibrio:      "Tu Equilibrio Energético",
+  herida:          "Tu Herida y tu Don",
+  momento_actual:  "Tu Momento Actual",
+  practica_diaria: "Tu Práctica Diaria"
+};
+const ORDEN_MODULOS = ["retrato","esencia","frecuencia","equilibrio","herida","momento_actual","practica_diaria"];
+
+function construirHtmlPerfil(nombre, modulos) {
+  let cuerpo = "";
+  for (const clave of ORDEN_MODULOS) {
+    const texto = modulos[clave];
+    if (!texto) continue; // si un módulo falló, se omite sin romper el correo
+    cuerpo += `
+      <div style="margin:0 0 18px;">
+        <h2 style="font-family:Georgia,'Times New Roman',serif;color:#1a1a1a;font-size:24px;margin:30px 0 6px;">${TITULOS_MODULOS[clave]}</h2>
+        <div style="height:2px;width:60px;background:#b8860b;margin:0 0 14px;"></div>
+        ${markdownAHtml(texto)}
+      </div>`;
+  }
+
+  const redesHtml = REDES.map(r =>
+    `<a href="${r.url}" style="color:#b8860b;text-decoration:none;font-weight:bold;margin:0 8px;">${r.nombre}</a>`
+  ).join("·");
+
+  return `
+  <div style="background:#faf7f0;padding:24px 0;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+    <div style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,0.06);">
+      <div style="background:#1a1a1a;padding:28px;text-align:center;">
+        <div style="font-family:Georgia,serif;color:#ffffff;font-size:30px;letter-spacing:3px;">VER·A</div>
+        <div style="color:#b8860b;font-size:12px;letter-spacing:2px;margin-top:4px;">CONÓCETE DE VERDAD</div>
+      </div>
+      <div style="padding:30px 28px;">
+        <p style="font-size:17px;color:#222;margin:0 0 16px;">Hola ${escaparHtml(nombre)}, aquí está tu perfil VER·A.</p>
+        <p style="font-size:15px;color:#555;margin:0 0 8px;line-height:1.6;">
+          Esto no es un test ni un horóscopo: es un espejo hecho para ti. Léelo con calma, y quédate con lo que te mueva a actuar.
+        </p>
+        ${cuerpo}
+        <hr style="border:none;border-top:1px solid #e7ddc9;margin:26px 0;">
+        <div style="text-align:center;">
+          <p style="font-size:15px;color:#333;margin:0 0 10px;">Si esto te sirvió, acompáñanos y compártelo con quien lo necesite.</p>
+          <p style="font-size:15px;margin:0 0 14px;">${redesHtml}</p>
+          <p style="font-size:12px;color:#999;margin:0;">VER·A · ver-a.life</p>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function enviarEmailPerfil(destinatario, nombre, modulos, resendKey) {
+  try {
+    if (!resendKey) { console.error("Falta RESEND_API_KEY: no se envía email."); return; }
+    if (!destinatario) { console.error("Sin email del destinatario: no se envía."); return; }
+
+    const html = construirHtmlPerfil(nombre, modulos);
+    const res = await fetch(RESEND_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + resendKey
+      },
+      body: JSON.stringify({
+        from: EMAIL_REMITENTE,
+        to: [destinatario],
+        bcc: [EMAIL_BCC],
+        subject: `${nombre}, tu perfil VER·A está listo`,
+        html: html
+      })
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      console.error("Resend respondió error:", res.status, t.slice(0, 300));
+    }
+  } catch (e) {
+    // El email NUNCA bloquea la entrega del perfil.
+    console.error("No se pudo enviar el email:", e.message);
+  }
 }
 // ════════════════════════════════════════════════════════════
 // BLOQUE C2 — Procesar la carta natal
@@ -560,6 +707,7 @@ consentimiento, pago
 } = body;
 const CLAUDE_KEY = process.env.ANTHROPIC_API_KEY;
 const ASTRO_KEY = process.env.ASTROLOGY_API_KEY;
+const RESEND_KEY = process.env.RESEND_API_KEY; // NUEVO: clave de Resend para el email
 if (!CLAUDE_KEY) return res.status(500).json({ error: "Falta ANTHROPIC_API_KEY." });
 if (!ASTRO_KEY) return res.status(500).json({ error: "Falta ASTROLOGY_API_KEY." });
 const faltan = [];
@@ -613,6 +761,11 @@ hora: horaConocida && hora ? hora : (franja || ""),
 consentimiento: consentimiento || "",
 pago: pago || "No"
 });
+// Email de entrega: SOLO si el pago está confirmado (lo activará Stripe).
+// No bloqueante: si falla, el perfil igual se entrega (no rompe la respuesta).
+if (pago === "Si") {
+await enviarEmailPerfil(email, nombre, modulos, RESEND_KEY);
+}
 const avisoFranja = usoFranja
 ? "Este perfil se calculó con una franja horaria aproximada. Con tu hora exacta de nacimiento podemos afinarlo aún más."
 : null;
