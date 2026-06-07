@@ -516,9 +516,9 @@ return `- ${f.etiqueta}: ${matizDeGrado(f.grado)}, se activa en ${f.area}${modo}
 // MARIO: pega aquí las URLs reales de tu canal cuando tengas los videos.
 const FRECUENCIAS = {
 Earth: { hz:"7.83 Hz", para_cuando:"cuando perdiste el centro y te falta raíz y aterrizaje", link:"https://youtu.be/SO3vBRaGcYw?si=4CK45ETDhYTI2H5R" },
-Fire: { hz:"285 Hz", para_cuando:"cuando te falta vitalidad, empuje y ganas de arrancar", link:null },
+Fire: { hz:"285 Hz", para_cuando:"cuando te falta vitalidad, empuje y ganas de arrancar", link:"https://youtu.be/mAUsMe7lauE" },
 Air: { hz:"741 Hz", para_cuando:"cuando no puedes expresarte y te falta claridad mental", link:"https://youtu.be/8TioM0izmi0?si=zCltlVjfN69Daqah" },
-Water: { hz:"639 Hz", para_cuando:"cuando un vínculo o una emoción necesitan sanar", link:null }
+Water: { hz:"639 Hz", para_cuando:"cuando un vínculo o una emoción necesitan sanar", link:"https://youtu.be/IqcT6PIIMro" }
 };
 const frec = FRECUENCIAS[carta.debil];
 const linkTexto = frec.link ? `Puedes escucharla aquí: ${frec.link}` : `Estará muy pronto en el canal de VER·A.`;
