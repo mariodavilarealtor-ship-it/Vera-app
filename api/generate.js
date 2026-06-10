@@ -227,7 +227,7 @@ function construirHtmlPerfil(nombre, modulos) {
       <div style="padding:30px 28px;">
         <p style="font-size:17px;color:#222;margin:0 0 16px;">Hola ${escaparHtml(nombre)}, aquí está tu perfil VER·A.</p>
         <p style="font-size:15px;color:#555;margin:0 0 8px;line-height:1.6;">
-          Esto no es un test ni un horóscopo: es un espejo hecho para ti. Léelo con calma, y quédate con lo que te mueva a actuar.
+          Esto no es un test genérico ni una respuesta automática: es un espejo hecho para ti. Léelo con calma, y quédate con lo que te mueva a actuar.
         </p>
         ${cuerpo}
         <hr style="border:none;border-top:1px solid #e7ddc9;margin:26px 0;">
