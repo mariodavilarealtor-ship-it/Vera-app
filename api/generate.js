@@ -507,7 +507,14 @@ function matizDeGrado(grado) {
 }
 
 function construirPrompts(nombre, carta, vera) {
-const auto = bloqueAutorreporte(vera.autorreporte);
+// Autorreporte SELECTIVO (anti-repetición): lo que la persona reporta de sí misma
+// (p1-p4, incl. cómo reacciona bajo presión) solo se inyecta en los 3 módulos
+// donde de verdad aporta y se trabaja: Herida, Equilibrio y Práctica diaria.
+// En los demás (Retrato, Esencia, Frecuencia, Momento) va vacío, para que ese
+// hilo no se repita en los 7 módulos. No se pierde valor: el dato sigue usándose
+// donde corresponde; solo deja de regarse por todos lados.
+const auto = "";                                   // módulos que NO llevan autorreporte
+const autoFull = bloqueAutorreporte(vera.autorreporte); // Herida, Equilibrio, Práctica
 const listaFuerzas = carta.listaFuerzas.map(f => {
 const modo = f.reflexivo ? ", en modo reflexivo (mira hacia adentro)" : "";
 return `- ${f.etiqueta}: ${matizDeGrado(f.grado)}, se activa en ${f.area}${modo}`;
@@ -544,7 +551,8 @@ ESCRIBE EL RETRATO EN ESTAS SECCIONES, en este orden exacto, con estos títulos:
 4. Tu herida y tu mayor poder — dónde le ha dolido históricamente y cómo esa misma herida, trabajada, se vuelve su don más fuerte. Cierra con una práctica concreta de transformación.
 5. Para qué viniste a triunfar — su misión, visión y los caminos donde puede destacar (incluidos campos de trabajo o vocación), derivados de sus datos. Sé concreto. Que sienta que tiene un para qué.
 6. Tu primer paso — UNA sola acción clara que pueda hacer hoy o esta semana. Corta, potente, imposible de ignorar.
-Cada sección personal e irrepetible. Toda afirmación apoyada en un dato real. Ni una palabra de la lista prohibida. El texto debe dejar a la persona MOTIVADA A ACTUAR.`
+Cada sección personal e irrepetible. Toda afirmación apoyada en un dato real. Ni una palabra de la lista prohibida. El texto debe dejar a la persona MOTIVADA A ACTUAR.
+REGLA DE NO REPETICIÓN (IMPORTANTE): este perfil tiene otros módulos que cubren a fondo ciertos temas. Para no repetir, en este Retrato trata la sección 3 (lo que te frena) y la 4 (tu herida) de forma BREVE y panorámica —nómbralas y da UNA práctica corta—, sin agotarlas, porque hay módulos dedicados ("Tu Equilibrio Energético" desarrolla a fondo la debilidad y sus prácticas; "Tu Herida y tu Don" desarrolla a fondo la herida). El peso de este Retrato va en las secciones 1, 2 y 5 (quién es, sus fuerzas, su misión). No expliques en detalle cómo la persona reacciona bajo presión: eso pertenece a los módulos dedicados.`
 };
 prompts.esencia = {
 system: SYSTEM_BASE + `
@@ -560,7 +568,8 @@ Hacia dónde te empuja la vida — su dirección natural, sus metas, cómo logra
 Lo que de verdad anhelas (aunque no lo digas) — su motor íntimo, lo más privado, nombrado con delicadeza.
 Cómo te ve el mundo — la impresión que da. Señala si coincide o contrasta con lo que es por dentro (ese contraste es oro).
 Tu hilo de oro — une los cuatro rasgos en una frase reveladora sobre quién es y para qué está aquí, y dale UNA acción concreta para honrar ese patrón desde hoy.
-PROFUNDO y personal, que valga oro. NUNCA un número, NUNCA "nombre/fecha", NUNCA términos astrológicos. Si un rasgo es poco común, puede resaltarse como "algo poco común en ti" sin explicar por qué. Cierre hacia la acción, nunca predicción.`
+PROFUNDO y personal, que valga oro. NUNCA un número, NUNCA "nombre/fecha", NUNCA términos astrológicos. Si un rasgo es poco común, puede resaltarse como "algo poco común en ti" sin explicar por qué. Cierre hacia la acción, nunca predicción.
+REGLA DE NO REPETICIÓN: enfócate en la raíz profunda, la dirección de vida y el anhelo de la persona. NO desarrolles aquí su debilidad práctica ni cómo reacciona bajo presión (eso tiene módulo propio, "Tu Equilibrio Energético"), ni su herida central (tiene módulo propio, "Tu Herida y tu Don"). Si rozas esos temas, que sea de pasada; este módulo es sobre su esencia, no sobre lo que debe corregir.`
 };
 prompts.frecuencia = {
 system: SYSTEM_BASE + `
@@ -573,7 +582,8 @@ Tu nota única — abre nombrando con calidez y certeza la frecuencia con la que
 Cuando la vida fluye — cómo se ve en sus mejores momentos, y 1 práctica concreta para exprimir los días buenos y vivir presente.
 Cuando la vida pesa — con honestidad: habrá días en que se sienta lejos de su fuerza. Nombra cómo se siente. Entrega 2 prácticas claras, apoyadas en su recurso interno, para atravesar esos momentos activamente (cuerpo, mente, foco). El fondo: no controlas que vengan los días malos, pero sí qué haces dentro de ellos.
 Tu recordatorio — una sola frase potente, en segunda persona, que pueda repetirse cualquier día para volver a su frecuencia.
-Ni una palabra prohibida. Todo apoyado en los datos reales. Cierre que dé una brújula, no una etiqueta.`
+Ni una palabra prohibida. Todo apoyado en los datos reales. Cierre que dé una brújula, no una etiqueta.
+REGLA DE NO REPETICIÓN: las prácticas de "Cuando la vida pesa" deben apoyarse en SU RECURSO INTERNO específico (el dato de arriba) y ser DISTINTAS de las del módulo "Tu Equilibrio Energético". No uses aquí la práctica de "ganar el segundo de pausa / respirar antes de reaccionar" ni "escribir una frase de lo que sientes": esas pertenecen a otros módulos. Busca prácticas propias de este recurso. Evita describir en detalle cómo la persona reacciona bajo presión (eso es de Herida y Equilibrio).`
 };
 
 prompts.equilibrio = {
@@ -584,7 +594,7 @@ La energía que más le falta cultivar: ${vera.debilidad_descrita}
 Lo que eso le provoca en lo cotidiano: ${vera.efecto_practico_debilidad}
 Lo que en cambio le sobra (su zona fuerte): ${vera.fortaleza_descrita}
 Su sonido de apoyo: una frecuencia de ${frec.hz}, ideal para ${frec.para_cuando}
-Dónde escucharlo: ${linkTexto}${auto}
+Dónde escucharlo: ${linkTexto}${autoFull}
 ESTRUCTURA (corta y accionable):
 Tu desequilibrio, en una frase — una o dos líneas, sin rodeos: qué le sobra y qué le falta, y por qué eso lo desbalancea en el día a día. Que se reconozca al instante.
 Lo que esto te está costando — 2-3 líneas concretas sobre cómo se nota ese desequilibrio en su vida real. Sin dramatizar, solo nombrar lo que ya vive.
@@ -600,7 +610,7 @@ Encarnas (sin nombrar): Friedman (la persona deja de ser víctima de su herida; 
 user: `Escribe el módulo "Tu Herida Original y tu Don" para ${nombre}. Directo, persuasivo, honesto. Sin rodeos pero sin crueldad: la verdad que ayuda, no la que hiere por herir.
 Su herida: ${vera.herida_traducida}
 La lección que vino a corregir: ${vera.leccion_a_corregir}
-El don en que se transforma esa herida: ayudar a otros desde lo mismo que él tuvo que sanar${auto}
+El don en que se transforma esa herida: ayudar a otros desde lo mismo que él tuvo que sanar${autoFull}
 ESTRUCTURA:
 La herida que casi nadie te ha nombrado — nómbrala de frente, con precisión. Que sienta "esto me describe". Con la certeza de quien conoce, no de quien adivina. Describe cómo se manifiesta en su vida real (decisiones, miedos, patrones).
 Si ahora mismo estás pensando "esto no soy yo" — aquí va la persuasión para el escéptico. Reconoce su posible resistencia con respeto y gírala con la técnica del "no tienes nada que perder". Que la duda se vuelva curiosidad.
@@ -620,7 +630,8 @@ ESTRUCTURA (breve, sin títulos internos, que fluya como un mensaje):
 1. Abre nombrando su etapa de vida de una forma que SORPRENDA, un ángulo que no esperaba. Realista: si es exigente, dilo con honestidad.
 2. Gira hacia el aprendizaje/crecimiento que esta etapa específica le ofrece. Qué puede construir o aprovechar justo ahora que no podría en otro momento. El lado bueno real, no consuelo vacío.
 3. Cierra con una idea potente: cómo aprovechar este momento a partir de hoy. Que vea su presente como oportunidad, no como espera.
-CORTO, cada frase con peso. Realista + optimista a la vez. Que SORPRENDA. Ni una palabra prohibida. Cierre que empuje a aprovechar el ahora.`
+CORTO, cada frase con peso. Realista + optimista a la vez. Que SORPRENDA. Ni una palabra prohibida. Cierre que empuje a aprovechar el ahora.
+REGLA DE NO REPETICIÓN: este módulo es SOLO sobre la etapa de vida que atraviesa y cómo aprovecharla. NO repitas aquí la práctica del "segundo de pausa", ni "escribir lo que sientes", ni el diagnóstico de su debilidad o de cómo reacciona bajo presión (todo eso vive en otros módulos). Mantente en el tema del momento vital; no entregues prácticas que ya están en Equilibrio, Herida o Práctica diaria.`
 };
 prompts.practica_diaria = {
 system: SYSTEM_BASE + `
@@ -628,7 +639,7 @@ ESTE MÓDULO ES EL CORAZÓN FILOSÓFICO de VER·A y su cierre. Aquí se dice la 
 Tono: cálido, sereno, cercano. Este módulo no persuade ni diagnostica: acompaña. Es el momento suave del perfil.`,
 user: `Escribe el módulo de cierre "Tu Práctica Diaria" para ${nombre}, una rutina corta que pueda hacer cada mañana (o cuando lo necesite). Personalízala con quién es esta persona y con su foco de crecimiento.
 Quién es, en breve: su fortaleza es ${vera.fortaleza_descrita}; trabaja en cultivar ${vera.debilidad_descrita}
-Su foco de crecimiento: ${vera.debilidad_descrita}${auto}
+Su foco de crecimiento: ${vera.debilidad_descrita}${autoFull}
 ESTRUCTURA:
 Por qué esto importa (apertura breve) — 2-3 líneas: una máquina puede conocerte, pero solo tú puedes sentirte; tu poder está en manejar tus emociones, y eso se entrena cada día. Cálido, no solemne. Que entienda que aquí termina de leer y empieza a vivir.
 1. Tu gratitud de hoy — una práctica de gratitud PERSONALIZADA a quién es (ligada a su fortaleza o proceso). No "agradece tres cosas" genérico. Dale una frase concreta de gratitud hecha a su medida.
