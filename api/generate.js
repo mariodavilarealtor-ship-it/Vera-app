@@ -1,26 +1,17 @@
 // ============================================================
-// VER·A — generate.js (motor del Perfil VER·A)
-// Versión 3.0 — 24 julio 2026
+// VER·A — generate.js (motor del Perfil VER·A, 8 módulos)
+// Versión 2.0 — 23 julio 2026
 //
-// ARQUITECTURA DE DOS PASOS:
-//   PASO 1: un analista experto interpreta la carta SIN restricciones de
-//           vocabulario y produce un informe técnico interno.
-//   PASO 2: 9 módulos reciben ese informe y lo traducen a lenguaje VER·A.
-//   El filtro de lenguaje va en la SALIDA, no en la entrada.
-//
-// QUÉ CAMBIÓ vs v2:
-// - Análisis experto real: se interpretan signos, aspectos, elementos,
-//   numerología y frecuencia cruzados entre sí (antes el modelo recibía
-//   códigos sueltos sin significado y escribía genérico).
-// - Módulo nuevo "Tu Misión y tu Camino": vocación, entornos donde rinde,
-//   entornos que lo desgastan, activo desaprovechado.
-// - Ajuste por EDAD: los ejemplos se adaptan a la vida real de la persona.
-//   Menores de 20 no reciben ejemplos de pareja estable, socios ni hipotecas.
-// - Sin hora: el análisis declara qué no puede determinar y compensa con
-//   lo que sí es fiable. El aviso al usuario es honesto, no decorativo.
-// - Equilibrio obligatorio: cada módulo nombra capacidades reales, no solo
-//   evasiones. Un módulo que solo señala fallas es un juicio, no un espejo.
-// - Perfil largo por diseño: ~2.600-3.000 palabras densas, sin relleno.
+// CAMBIOS PRINCIPALES vs v1:
+// 1. Se pide a la API el set completo de puntos (active_points) incluyendo
+//    Nodo Sur, Lilith y planetas exteriores. Antes se recibía el set por defecto.
+// 2. Se captura el SIGNO de cada punto (antes solo se usaba el elemento).
+// 3. Se procesan los ASPECTOS con orbe cerrado (<3°) = la tensión real.
+// 4. El modelo recibe el dato CRUDO y traduce al escribir (antes el código
+//    traducía primero y le entregaba frases ya vacías).
+// 5. Tabla SIGNIFICADOS reescrita con mecanismos de evasión, no cualidades.
+// 6. Cada módulo tiene su ZONA propia (anti-repetición estructural).
+// 7. Módulo nuevo: "Tu Dirección" (8 llamadas paralelas).
 // ============================================================
 
 // ════════════════════════════════════════════════════════════
@@ -515,7 +506,14 @@ function limpiarTexto(texto) {
   if (!texto) return "";
   let limpio = texto;
   for (const re of PALABRAS_PROHIBIDAS) limpio = limpio.replace(re, "");
-  return limpio.replace(/\s{2,}/g, " ").trim();
+  // Separar títulos ## que hayan quedado pegados al texto anterior o posterior.
+  limpio = limpio.replace(/([^\n])\s*(#{2,3}\s)/g, "$1\n\n$2"); // texto ## -> salto antes
+  limpio = limpio.replace(/(#{2,3}[^\n]+?)\s{2,}([A-ZÁÉÍÓÚ¿¡])/g, "$1\n\n$2"); // ## Título Texto -> salto después
+  // Limpiar espacios múltiples DENTRO de cada línea, sin tocar los saltos de línea.
+  limpio = limpio.split("\n").map(l => l.replace(/[ \t]{2,}/g, " ").trimEnd()).join("\n");
+  // Colapsar más de 2 saltos seguidos a exactamente 2.
+  limpio = limpio.replace(/\n{3,}/g, "\n\n");
+  return limpio.trim();
 }
 
 function construirAutorreporte(p1, p2, p3, p4) {
@@ -555,63 +553,51 @@ function traducirAVerA(carta, frecuencia, tikkun, fase, esencia, autorreporte) {
 // El filtro de lenguaje VER·A se aplica después, en la redacción.
 // ════════════════════════════════════════════════════════════
 
-const SYSTEM_ANALISIS = `Eres un analista experto en astrología natal, numerología pitagórica y tradición de los 72 nombres. Produces un INFORME TÉCNICO INTERNO que otro redactor usará como base. Este informe NO lo lee el cliente final.
+const SYSTEM_ANALISIS = `Eres un astrólogo, numerólogo y analista de la tradición de los 72 nombres, con nivel de maestría. Produces un INFORME INTERNO que un redactor usará luego. El cliente NO lo lee, así que escribe con todo tu vocabulario técnico, sin filtros.
 
-Usa toda tu capacidad técnica sin filtros. Nombra signos, casas, aspectos, regencias. Denso y preciso. No suavices.
+TU FORMA DE TRABAJAR (esto es lo que te distingue de un lector superficial):
 
-CRITERIOS:
-- Cruza posiciones. Interpreta el conjunto, no la lista suelta.
-- Pesa aspectos por orbe: bajo 1° determinante, 1-3° fuerte, sobre 3° matiza.
-- Prioriza lo repetido: si tres factores apuntan a lo mismo, eso define a la persona.
-- Distingue lo que la persona ES de lo que HACE PARA EVITAR sentir. Esa distinción es el corazón del informe.
-- Nombra contradicciones. Si Sol y Luna discrepan, ahí vive la tensión real.
-- Sé concreto: en vez de "sensible", di en qué situación y con qué consecuencia.
+NO llenas casillas. NO describes planeta por planeta en abstracto. Haces lo que hace un maestro cuando le ponen una carta delante:
+
+1. PRIMERO IDENTIFICAS LOS EJES. Miras toda la carta y encuentras los 3 o 4 patrones que se REPITEN o que CHOCAN. Un solo planeta dice poco; tres factores apuntando a lo mismo definen a la persona. Un planeta en tensión con otro (cuadratura, oposición, orbe cerrado) es donde vive el conflicto real. Ahí está la persona, no en la lista.
+
+2. CRUZAS SIEMPRE. Nunca "Sol en Leo = brillante". Siempre: "Sol en Leo PERO pegado a Saturno = quiere brillar y se autocensura antes de mostrarse". El significado está en la combinación, jamás en el dato suelto. Un aspecto de orbe menor a 1 grado es determinante: dale el peso que merece.
+
+3. VAS A LA PROFUNDIDAD, NO A LA COBERTURA. Es mejor desarrollar 4 ejes a fondo, con su mecanismo psicológico y cómo se manifiesta en la vida real, que tocar 12 posiciones por encima. Si un planeta no aporta a un eje central, MENCIONALO BREVE O DEJALO. No rellenes.
+
+4. CADA FUENTE APORTA ALGO DISTINTO. USALAS TODAS DE VERDAD:
+   - CARTA (signos + casas + aspectos): el carácter, las tensiones, la estructura psiquica.
+   - NUMEROLOGIA DEL NOMBRE Y LA FECHA: esto NO es decorativo. El Camino de vida es la leccion central de la existencia. El Alma es lo que la persona anhela en secreto. El Destino es hacia donde la empuja la vida. La Personalidad es la mascara. CRUZA la numerologia con la carta: el numero de Alma confirma lo que dice la Luna, o lo contradice? Esa coincidencia o choque es informacion valiosa. Dedicale analisis real, no una linea.
+   - FRECUENCIA / ANGELES: la fortaleza innata (angel principal) y el recurso para la crisis (angel secundario). Traduce sus cualidades a capacidades humanas concretas y di COMO se activan.
+   - NODOS: el Nodo Sur es la zona de confort, lo que la persona ya domina y usa como refugio para no crecer. El Nodo Norte es la direccion incomoda donde esta su evolucion. Este eje es de los mas reveladores: desarrollalo con cuidado, con ejemplos de comportamiento.
+   - QUIRON: la herida central de valor. LILITH: lo que reprime, lo que no se permite, su fuerza en sombra.
+
+5. TODO APUNTA A UN FIN: ayudar a la persona a ENTENDER Y TRABAJAR SUS EMOCIONES. No haces un retrato para que se admire. Haces un diagnostico para que se transforme. Por cada patron que nombres, piensa: de que le sirve esto para conocerse y crecer?
 
 SI NO HAY HORA:
-No inventes casas ni Ascendente. Declara qué queda sin determinar. Compensa profundizando en signos, aspectos, elementos, numerología y frecuencia. El informe debe ser completo en CARÁCTER aunque no ubique TERRENO.
+No tienes Ascendente ni casas fiables. Dilo. Pero el caracter se lee igual de bien con signos, aspectos, elementos, numerologia y angeles. Profundiza en eso.
 
-ESTRUCTURA (usa estos títulos exactos):
+ESTRUCTURA DEL INFORME (libre en la forma, pero cubre esto):
 
-## NÚCLEO
-Identidad (Sol), mundo emocional (Luna), proyección (Ascendente si hay hora). La contradicción principal entre ellos.
+EJES CENTRALES: los 3-4 patrones que definen a esta persona, cada uno cruzando varios factores, cada uno con su mecanismo psicologico. Este es el corazon del informe. Extenso.
 
-## MODO DE OPERAR
-Cómo piensa (Mercurio), cómo vincula y valora (Venus), cómo actúa (Marte). Con qué destaca realmente.
+FORTALEZAS REALES: que tiene de verdad, anclado en la carta/numero/angel, y para que le sirve en la vida concreta.
 
-## ESTRUCTURA Y LÍMITE
-Saturno: dónde se exige, dónde se bloquea, qué no se permite. Júpiter: dónde se expande, dónde exagera.
+DEBILIDADES Y COMO TRABAJARLAS: sus puntos debiles reales (del elemento ausente, de los aspectos tensos, del Nodo Sur), y para cada uno, COMO se corrige. Concreto, accionable.
 
-## FUERZAS PROFUNDAS
-Urano (dónde rompe), Neptuno (dónde idealiza o se engaña), Plutón (dónde ejerce o teme el poder), Lilith (qué reprime).
+LA HERIDA Y COMO TRABAJARLA: de donde viene (Quiron, Luna, numero), como se manifiesta hoy, y el camino concreto de sanacion.
 
-## BALANCE ELEMENTAL
-Conteo real. Dominante = cómo funciona por defecto. Ausente o débil = de qué carece, qué entornos lo desgastan, qué debe entrenar a propósito.
+EL NOMBRE Y EL ANHELO: que revela la numerologia del nombre y la fecha sobre su mision y su motor secreto. Cruzado con la carta.
 
-## TENSIONES
-Cada aspecto de orbe cerrado con su significado psicológico concreto. Distingue tensión (cuadratura, oposición) de talento (trígono, sextil).
+LA FRECUENCIA DE ORIGEN: fortaleza innata y recurso de crisis, de los angeles, traducido a lo humano.
 
-## LAS TRES HERIDAS
-1. Valor propio: Quirón (signo, casa si hay, aspectos).
-2. Vínculo: Luna y sus aspectos duros. Cómo aprendió que se ama.
-3. Evasión: Nodo Sur. A dónde corre cuando se siente inseguro.
+DIRECCION DE VIDA: el eje de los nodos, de que refugio sale, hacia donde va.
 
-## DIRECCIÓN DE CRECIMIENTO
-Nodo Norte: qué terreno le toca habitar y por qué le incomoda.
+CAMINO / VOCACION: donde rinde, que entornos lo potencian y cuales lo agotan.
 
-## NUMEROLOGÍA
-Camino (misión), Destino (dirección), Alma (motor privado), Personalidad (imagen externa). Cruza con la carta: ¿refuerzan o se contradicen? Los maestros (11, 22, 33) señalan exigencia alta y crisis de confianza.
+SINTESIS EMOCIONAL: la frase central, cual es el trabajo emocional de esta persona en esta vida. Que debe aprender a sentir, soltar o sostener.
 
-## FRECUENCIA DE ORIGEN
-Ángel principal: fortaleza natural y aprendizaje de vida. Ángel secundario: recurso en dificultad. Traduce sus cualidades a capacidades humanas concretas.
-
-## PERFIL PROFESIONAL
-Cruza elemento dominante (cómo trabaja), función más fuerte (con qué destaca), Medio Cielo si hay hora (vocación visible) y elemento ausente (qué entorno lo agota). Da 4-6 campos concretos y 2-3 entornos a evitar. Nada genérico.
-
-## MOMENTO ACTUAL
-Cruza edad con etapa vital. Qué le toca atravesar ahora y qué suele postergar en esta fase.
-
-## SÍNTESIS
-Cinco líneas: quién es, qué evita, qué necesita, hacia dónde va, cuál es su mayor activo desaprovechado.`;
+Se denso, especifico y cruzado. Este informe es la materia prima de todo el perfil: si es profundo, el perfil sera profundo.`;
 
 function construirPromptAnalisis(nombre, edad, carta, esencia, frecuencia, tikkun, hayHora) {
   const P = (p) => (p && p.signo)
@@ -715,7 +701,15 @@ SIEMPRE SEGUNDA PERSONA (CRÍTICO): escribes DIRECTAMENTE a la persona, siempre 
 
 GÉNERO NEUTRO (CRÍTICO): no conoces el género. Prohibido todo adjetivo o participio marcado. Errores a evitar: "llegas preparado" → "llegas con todo listo"; "tú mismo" → "tú"; "te vuelves más frío" → "pones más distancia"; "estás cansado" → "cargas cansancio". Reformula con sustantivos ("tu claridad") o verbos ("hablas con claridad" en vez de "eres claro"). Revisa CADA frase.
 
-TÍTULOS INTERNOS: cada título va en SU PROPIA LÍNEA, precedido de ## y con línea en blanco antes y después. Nunca pegues un título al párrafo anterior.
+TÍTULOS INTERNOS (CRÍTICO PARA EL FORMATO): cada título ## va SOLO en su línea, con una línea vacía ANTES y otra DESPUÉS. JAMÁS pegues un título al final de un párrafo.
+INCORRECTO: "...y lo llamas descanso. ## Lo que te mueve Lo que te mueve..."
+CORRECTO:
+"...y lo llamas descanso.
+
+## Lo que te mueve
+
+Lo que te mueve..."
+Antes de entregar, revisa que ningún ## quede en medio de una línea de texto.
 
 ESPAÑOL NEUTRO: usa "tú". Prohibido vos/tenés/sos/querés/podés. Sin regionalismos.
 
@@ -981,13 +975,30 @@ async function llamarClaude(systemPrompt, userPrompt, claudeKey, maxTokens) {
 const CLAVES_MODULOS = ["retrato","esencia","frecuencia","equilibrio","herida","direccion","mision","momento_actual","practica_diaria"];
 
 async function generarModulos(prompts, claudeKey) {
-  const resultados = await Promise.allSettled(
-    CLAVES_MODULOS.map(k => llamarClaude(prompts[k].system, prompts[k].user, claudeKey, 2500))
-  );
   const perfil = {};
-  resultados.forEach((r, i) => {
-    perfil[CLAVES_MODULOS[i]] = (r.status === "fulfilled" && r.value) ? limpiarTexto(r.value) : null;
-  });
+
+  // Un intento con un reintento automático si falla o vuelve vacío.
+  async function generarUno(k) {
+    for (let intento = 1; intento <= 2; intento++) {
+      try {
+        const txt = await llamarClaude(prompts[k].system, prompts[k].user, claudeKey, 2500);
+        if (txt && txt.trim()) return limpiarTexto(txt);
+      } catch (e) {
+        if (intento === 2) console.error(`Módulo ${k} falló:`, e.message);
+      }
+      // pausa breve antes del reintento
+      await new Promise(r => setTimeout(r, 800));
+    }
+    return null;
+  }
+
+  // Tandas de 3 para no saturar el límite de tasa (antes eran 9 a la vez).
+  const TAM_TANDA = 3;
+  for (let i = 0; i < CLAVES_MODULOS.length; i += TAM_TANDA) {
+    const tanda = CLAVES_MODULOS.slice(i, i + TAM_TANDA);
+    const res = await Promise.all(tanda.map(k => generarUno(k)));
+    tanda.forEach((k, j) => { perfil[k] = res[j]; });
+  }
   return perfil;
 }
 
@@ -1068,7 +1079,7 @@ module.exports = async function handler(req, res) {
 
     // ── PASO 1: análisis experto (interno) ──
     const promptAnalisis = construirPromptAnalisis(nombre, edad, carta, esencia, frecuencia, tikkun, hayHora);
-    const informe = await llamarClaude(SYSTEM_ANALISIS, promptAnalisis, CLAUDE_KEY, 4000);
+    const informe = await llamarClaude(SYSTEM_ANALISIS, promptAnalisis, CLAUDE_KEY, 6000);
 
     // ── PASO 2: redacción de los 9 módulos ──
     const prompts = construirPrompts(nombre, edad, informe, vera, carta, hayHora);
