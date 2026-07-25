@@ -1,22 +1,25 @@
 // ============================================================
-// VER·A — generate.js (motor del Perfil VER·A, 8 módulos)
-// Versión 2.0 — 23 julio 2026
+// VER·A — generate.js (motor del Perfil VER·A)
+// VERSIÓN 3.0 — 24 julio 2026  ← ESTA ES LA BUENA
 //
-// CAMBIOS PRINCIPALES vs v1:
-// 1. Se pide a la API el set completo de puntos (active_points) incluyendo
-//    Nodo Sur, Lilith y planetas exteriores. Antes se recibía el set por defecto.
-// 2. Se captura el SIGNO de cada punto (antes solo se usaba el elemento).
-// 3. Se procesan los ASPECTOS con orbe cerrado (<3°) = la tensión real.
-// 4. El modelo recibe el dato CRUDO y traduce al escribir (antes el código
-//    traducía primero y le entregaba frases ya vacías).
-// 5. Tabla SIGNIFICADOS reescrita con mecanismos de evasión, no cualidades.
-// 6. Cada módulo tiene su ZONA propia (anti-repetición estructural).
-// 7. Módulo nuevo: "Tu Dirección" (8 llamadas paralelas).
+// ARQUITECTURA DE DOS PASOS:
+//   PASO 1: un astrólogo/numerólogo experto interpreta la carta SIN
+//           filtros y produce un informe interno profundo (6000 tokens).
+//           Identifica los 3-4 EJES que definen a la persona, cruza
+//           posiciones y aspectos, usa de verdad el nombre, los ángeles
+//           y los nodos. No llena casillas: va a la profundidad.
+//   PASO 2: 9 módulos reciben ese informe y lo traducen a lenguaje VER·A.
+//
+// CAMBIOS CLAVE vs versiones previas:
+// - Análisis experto que piensa por ejes, no por casillas.
+// - Módulo nuevo "Tu Misión y tu Camino" (vocación, entornos, activo sin usar).
+// - Ajuste por EDAD (menores de 20 sin ejemplos de pareja/socios/hipotecas).
+// - Módulos generados en TANDAS de 3 con reintento (arregla módulos vacíos).
+// - BUG CORREGIDO: limpiarTexto ya no colapsa los saltos de línea
+//   (era lo que pegaba los títulos ## al texto).
+// - Equilibrio obligatorio: cada módulo nombra capacidades reales, no solo fallas.
 // ============================================================
 
-// ════════════════════════════════════════════════════════════
-// BLOQUE B — Numerología "Tu Esencia" (cero API, en código)
-// ════════════════════════════════════════════════════════════
 const TABLA_LETRAS = {
 A:1,J:1,S:1, B:2,K:2,T:2, C:3,L:3,U:3, D:4,M:4,V:4,
 E:5,N:5,W:5, F:6,O:6,X:6, G:7,P:7,Y:7, H:8,Q:8,Z:8, I:9,R:9
@@ -213,17 +216,13 @@ function markdownAHtml(texto) {
 }
 
 const TITULOS_MODULOS = {
-  retrato:         "Tu Retrato",
-  esencia:         "Tu Esencia",
-  frecuencia:      "Tu Frecuencia de Origen",
-  equilibrio:      "Tu Equilibrio Energético",
-  herida:          "Tu Herida y tu Don",
-  direccion:       "Tu Dirección",
-  mision:          "Tu Misión y tu Camino",
-  momento_actual:  "Tu Momento Actual",
+  quien_eres:      "Quién Eres",
+  herida:          "Tu Herida y Cómo Sanarla",
+  equilibrio:      "De Qué Careces y Cómo Trabajarlo",
+  camino:          "Tu Camino",
   practica_diaria: "Tu Práctica Diaria"
 };
-const ORDEN_MODULOS = ["retrato","esencia","frecuencia","equilibrio","herida","direccion","mision","momento_actual","practica_diaria"];
+const ORDEN_MODULOS = ["quien_eres","herida","equilibrio","camino","practica_diaria"];
 
 function construirHtmlPerfil(nombre, modulos) {
   let cuerpo = "";
@@ -689,7 +688,7 @@ EQUILIBRIO OBLIGATORIO
 No todo es evasión. La persona también tiene capacidades reales: nómbralas con la misma precisión, diciendo para qué le sirven y dónde ya las usa. Un módulo que solo señala fallas es un juicio, no un espejo. Alterna: lo que hace bien, lo que evita, lo que puede hacer con eso.
 
 PROHIBIDO ABSOLUTO
-- Nunca escribas: planeta, signo, casa, carta natal, astrología, horóscopo, zodíaco, ascendente, nodo, kabbalah, tikún, tránsito, retrógrado, grado, ningún nombre de signo (Aries, Tauro, Géminis, Cáncer, Leo, Virgo, Libra, Escorpio, Sagitario, Capricornio, Acuario, Piscis), ángel, salmo, tarot, número, numerología, chakra.
+- Nunca escribas: planeta, signo, casa, carta natal, astrología, horóscopo, zodíaco, ascendente, nodo, kabbalah, tikún, tránsito, retrógrado, grado, ningún nombre de signo (Aries, Tauro, Géminis, Cáncer, Leo, Virgo, Libra, Escorpio, Sagitario, Capricornio, Acuario, Piscis), ningún nombre de planeta o punto (Sol, Luna, Mercurio, Venus, Marte, Júpiter, Saturno, Urano, Neptuno, Plutón, Quirón, Lilith), ángel, salmo, tarot, número, numerología, chakra, "Alma" seguido de cifra, "Camino" seguido de cifra.
 - Nunca uses Fuego/Tierra/Aire/Agua como categorías ("tu energía dominante es X"). Puedes usar "chispa", "raíz", "claridad", "hondura" como metáforas sueltas.
 - Nunca escribas cifras de cálculo ni la palabra "grado".
 - Nunca uses vocabulario místico: energía, alma, vibrar, destino, abundancia, alinear, misión cósmica, "viniste a", "estás llamado a".
@@ -713,7 +712,16 @@ Antes de entregar, revisa que ningún ## quede en medio de una línea de texto.
 
 ESPAÑOL NEUTRO: usa "tú". Prohibido vos/tenés/sos/querés/podés. Sin regionalismos.
 
-TEXTO LIMPIO: nunca muestres correcciones ni titubeos. Solo la versión final.`;
+TEXTO LIMPIO: nunca muestres correcciones ni titubeos. Solo la versión final.
+
+TU MARCO (encárnalo, nunca lo nombres):
+- Carl Jung: lo que no se hace consciente gobierna la vida y se vive como destino; la sombra integrada se vuelve fuerza. Nombra lo que la persona no ve de sí.
+- Joe Dispenza: nadie está condenado a su pasado ni a su patrón; lo que se hace consciente se puede cambiar. Deja siempre una salida concreta, nunca una sentencia.
+- Neville Goddard: lo que asumes por dentro moldea lo que vives por fuera. La imagen interna importa (dicho en lenguaje llano, sin misticismo).
+- Conny Méndez: metafísica práctica y aterrizada, sin humo, con humor sereno.
+- Mario Alonso Puig: autoridad serena, base en cómo funciona la mente y el cuerpo; esperanza con fundamento, no autoayuda vacía.
+- PNL: el cambio es concreto. Da reencuadres, anclas, foco. Cada patrón nombrado viene con una palanca práctica para moverlo, no solo con el diagnóstico.
+El fin de todo: que la persona termine ENTENDIENDO algo suyo y con una acción real para trabajarlo. Diagnóstico + salida, siempre.`;
 
 function construirPrompts(nombre, edad, informe, vera, carta, hayHora) {
   const CTX = `INFORME INTERNO SOBRE ${nombre.toUpperCase()} (${edad} años):
@@ -736,196 +744,106 @@ Traduce a lenguaje VER·A. Usa el informe como fuente de verdad. Nunca menciones
 
   const p = {};
 
-  // ── 1. RETRATO — carácter completo ──
-  p.retrato = {
+  // ── 1. QUIÉN ERES (funde Retrato + Esencia + Frecuencia) ──
+  p.quien_eres = {
     system: SYSTEM_BASE,
     user: `${CTX}${edadNota}
 
-Escribe "Tu Retrato". 350-400 palabras.
+Escribe "Quién Eres". 500-600 palabras. Es el retrato central: quién es esta persona en su núcleo, su carácter, su motor y su fuerza natural, todo en UN solo hilo sin repetir.
 
-ZONA EXCLUSIVA: quién es esta persona en su funcionamiento diario. Su carácter completo. No desarrolles aquí su herida, su vocación ni su etapa de vida: tienen módulos propios.
+Usa del informe: EJES CENTRALES, FORTALEZAS REALES, EL NOMBRE Y EL ANHELO, LA FRECUENCIA DE ORIGEN.
 
-Usa del informe: NÚCLEO, MODO DE OPERAR, ESTRUCTURA Y LÍMITE, FUERZAS PROFUNDAS, TENSIONES.
+REGLA ANTIRREPETICIÓN CRÍTICA: elige los 3 ejes más fuertes del informe y desarróllalos UNA vez cada uno, a fondo. Si un rasgo ya lo dijiste, no vuelvas a él con otras palabras. Este es el ÚNICO módulo que describe su carácter general; los demás módulos NO lo repetirán, así que aquí va completo.
 
-## Cómo funcionas por dentro
-Su identidad central y su mundo emocional. La contradicción entre ambos: qué quiere ser y qué necesita en realidad. Concreto.
-
-## Lo que haces bien sin darte cuenta
-Sus capacidades reales, del informe. Para qué le sirven, dónde ya las usa. Sin elogiar en abstracto.
-
-## La distancia
-Qué proyecta y qué guarda. Un momento concreto donde se nota.
-
-Cierra con el riesgo, sin título.`
-  };
-
-  // ── 2. ESENCIA — motor privado (numerología con peso) ──
-  p.esencia = {
-    system: SYSTEM_BASE + `\n\nPROHIBIDO ADICIONAL: jamás menciones ni insinúes números, sumas, letras, nombres o fechas como origen de nada. Nunca "tu nombre revela".`,
-    user: `${CTX}${edadNota}
-
-Escribe "Tu Esencia". 300-350 palabras.
-
-ZONA EXCLUSIVA: su motor privado. Qué la mueve por dentro, qué da, qué no se permite pedir, y la distancia entre su imagen externa y su interior.
-
-Usa del informe: NUMEROLOGÍA (con peso real: camino, destino, alma, personalidad), cruzada con NÚCLEO.
+## Tu núcleo
+Los 2-3 ejes que te definen, cruzados. La contradicción central entre lo que muestras y lo que necesitas. Concreto, con momentos reconocibles.
 
 ## Lo que te mueve por dentro
-Su motor privado, lo que anhela sin decirlo. Del Alma y el Camino.
+Tu motor privado, lo que anhelas sin decirlo. Y la distancia entre tu imagen externa y tu interior.
 
-## Cómo te ve el mundo
-Su imagen externa. Si contrasta con lo interior, ese contraste es el punto: nómbralo.
+## Tu fuerza natural
+Lo que haces bien sin esfuerzo, para qué te sirve, dónde ya lo usas. Con la misma precisión que lo demás, sin adular.
 
-## Lo que das y lo que no pides
-Qué entrega, por qué lo aprendió (mecanismo concreto, no etiqueta), y qué no se permite recibir.
-
-Cierra con una acción concreta para hoy, sin título.`
+Cierra con el riesgo, sin título: "Puede parecer X, pero es Y".`
   };
 
-  // ── 3. FRECUENCIA — ángeles con peso ──
-  p.frecuencia = {
-    system: SYSTEM_BASE,
-    user: `${CTX}${edadNota}
-
-Escribe "Tu Frecuencia de Origen". 300-350 palabras.
-
-ZONA EXCLUSIVA: su fortaleza natural y su recurso en los momentos difíciles. No repitas su debilidad práctica (módulo Equilibrio) ni su herida (módulo Herida).
-
-Usa del informe: FRECUENCIA DE ORIGEN, con peso real. Traduce las cualidades a capacidades humanas concretas.
-
-## Tu nota única
-Su fortaleza natural. Qué le sale sin esfuerzo y otros envidian. Precisa, sin elogio vacío.
-
-## Cuando la vida fluye
-Cómo se ve en sus mejores momentos. Una práctica concreta para reconocerlos y aprovecharlos.
-
-## Cuando la vida pesa
-Honestidad: habrá días difíciles. Su recurso interno específico y dos prácticas concretas apoyadas en él. DISTINTAS de "respirar antes de reaccionar" y "escribir lo que sientes".
-
-Cierra con una frase repetible, sin título.`
-  };
-
-  // ── 4. EQUILIBRIO — de qué carece ──
-  p.equilibrio = {
-    system: SYSTEM_BASE,
-    user: `${CTX}${edadNota}
-
-Escribe "Tu Equilibrio Energético". 300-350 palabras. Práctico.
-
-ZONA EXCLUSIVA: de qué carece y qué entrenar. Único módulo que trata su desequilibrio práctico.
-
-Usa del informe: BALANCE ELEMENTAL. Lo dominante (cómo funciona por defecto) y lo ausente (qué le falta, qué entornos lo desgastan).
-
-Párrafo de apertura sin título: su desequilibrio en dos líneas.
-
-## Lo que esto te está costando
-2-3 líneas concretas de lo que ya vive por esa carencia.
-
-## Tres cosas que puedes hacer hoy
-Exactamente tres prácticas numeradas (1. 2. 3.), cada una en línea propia, accionables hoy, con verbos de acción.
-
-## Tu sonido
-Preséntalo como herramienta: ${frec.hz}, para ${frec.para}. Incluye el enlace en formato [Escúchalo aquí](${frec.link}).
-
-Cierra con el riesgo, sin título.`
-  };
-
-  // ── 5. HERIDA — las tres capas ──
+  // ── 2. TU HERIDA Y CÓMO SANARLA (funde Herida + Dirección) ──
   p.herida = {
-    system: SYSTEM_BASE + `\n\nTONO: directo y honesto, sin crueldad. PROHIBIDO negociar con el lector o convencerlo de que crea. Si es certero, no necesita defenderse.`,
+    system: SYSTEM_BASE + `\n\nTONO: directo y honesto, sin crueldad. Encarna a Jung (nombra lo que no ve) y Dispenza (deja siempre salida, nunca sentencia). No negocies con el lector.`,
     user: `${CTX}${edadNota}
 
-Escribe "Tu Herida y tu Don". 350-400 palabras.
+Escribe "Tu Herida y Cómo Sanarla". 500-600 palabras. NO repitas el carácter general (eso ya está en el módulo anterior). Aquí solo: la herida, su origen, cómo se manifiesta hoy, el refugio donde se esconde, y el camino concreto de sanación.
 
-ZONA EXCLUSIVA: sus heridas y cómo se vuelven fuerza. No hables de su etapa de vida ni de su vocación.
+Usa del informe: LA HERIDA Y CÓMO TRABAJARLA, DIRECCIÓN DE VIDA (nodos).
 
-Usa del informe: LAS TRES HERIDAS completas.
+## Dónde dudas de merecer
+La herida central, en una frase exacta. Después 2-3 momentos concretos y reconocibles donde aparece (según su edad).
 
-## Donde dudas de merecer
-La herida de valor propio. Nómbrala en una frase exacta. Después, 2-3 momentos concretos y reconocibles donde aparece.
+## De dónde viene
+Cómo aprendió esto antes de tener palabras. El mecanismo, no la culpa.
 
-## Cómo aprendiste a querer
-La herida de vínculo. Qué grabó antes de saber elegir, y cómo se repite hoy en sus relaciones (ajustadas a su edad).
+## Dónde te refugias
+El patrón conocido al que corre cuando algo aprieta, con ejemplos concretos integrados en la frase. Y el terreno de crecimiento opuesto: hacia dónde le toca ir aunque incomode.
 
-## Tu don
-Cómo eso mismo, trabajado, se vuelve su mayor fuerza. Afírmalo, no lo prometas. Di para qué sirve con otras personas.
+## Cómo se sana
+El camino concreto. Reencuadre (PNL) + una práctica real. Dispenza: esto se transforma, no es condena. Cómo la herida trabajada se vuelve su fuerza y le sirve con otros.
 
 Cierra con una práctica pequeña para esta semana, sin título.`
   };
 
-  // ── 6. DIRECCIÓN — refugio vs. crecimiento ──
-  p.direccion = {
-    system: SYSTEM_BASE,
+  // ── 3. DE QUÉ CARECES Y CÓMO TRABAJARLO (Equilibrio) ──
+  p.equilibrio = {
+    system: SYSTEM_BASE + `\n\nEl más práctico. PNL pura: diagnóstico rápido y palancas concretas para hoy.`,
     user: `${CTX}${edadNota}
 
-Escribe "Tu Dirección". 300-350 palabras.
+Escribe "De Qué Careces y Cómo Trabajarlo". 400-450 palabras. NO repitas la herida ni el carácter. Aquí solo: la carencia práctica concreta y cómo entrenarla.
 
-ZONA EXCLUSIVA: el lugar conocido donde se refugia y el terreno incómodo donde crece.
+Usa del informe: DEBILIDADES Y CÓMO TRABAJARLAS, BALANCE ELEMENTAL.
 
-Usa del informe: punto de evasión (herida 3) y DIRECCIÓN DE CRECIMIENTO.
+Párrafo de apertura sin título: tu desequilibrio en dos líneas. Qué te sobra y qué te falta.
 
-EXACTAMENTE 3 BLOQUES, con los ejemplos INTEGRADOS dentro de las frases (nunca en lista aparte):
+## Lo que esto te está costando
+2-3 líneas concretas de lo que ya vives por esa carencia.
 
-1. PATRÓN CONOCIDO: qué hace cuando se siente inseguro, con 2-3 ejemplos concretos metidos en la misma frase. Debe sonar a algo que hizo esta semana.
+## Tres cosas que puedes hacer hoy
+Exactamente tres prácticas numeradas (1. 2. 3.), cada una en su línea, accionables hoy, con verbos de acción. Anclas y reencuadres de PNL.
 
-2. CRECIMIENTO REAL: el terreno donde su seguridad se construye de verdad, con ejemplos concretos igualmente integrados. Descríbelo, no lo receta como consejo.
+## Tu sonido
+Preséntalo como herramienta: ${frec.hz}, para ${frec.para}. Incluye el enlace [Escúchalo aquí](${frec.link}).
 
-3. EL RIESGO: "puede parecer [lo que ven], pero es [lo que evita]".
-
-Sin títulos internos: que fluya como texto.`
+Cierra con el riesgo, sin título.`
   };
 
-  // ── 7. MISIÓN Y CAMINO — vocación (MÓDULO NUEVO) ──
-  p.mision = {
+  // ── 4. TU CAMINO (funde Misión + Momento actual) ──
+  p.camino = {
     system: SYSTEM_BASE,
     user: `${CTX}${edadNota}
 
-Escribe "Tu Misión y tu Camino". 350-400 palabras. Este módulo debe ser CONCRETO y ÚTIL: la persona termina sabiendo dónde encaja y dónde no.
+Escribe "Tu Camino". 450-550 palabras. CONCRETO y ÚTIL: dónde encaja, dónde no, y qué momento vive. NO repitas la herida ni el carácter general.
 
-ZONA EXCLUSIVA: hacia dónde va y en qué terreno rinde. Vocación, entornos, forma de trabajar.
-
-Usa del informe: PERFIL PROFESIONAL completo, cruzado con NUMEROLOGÍA (camino y destino).
+Usa del informe: CAMINO / VOCACIÓN, MOMENTO ACTUAL, SÍNTESIS.
 
 ## Cómo trabajas
-Su forma real de rendir: cómo aprende, cómo produce, en qué condiciones da lo mejor. Concreto y reconocible.
+Tu forma real de rendir: cómo aprendes, cómo produces, en qué condiciones das lo mejor.
 
 ## Dónde encajas
-4-6 campos o tipos de rol concretos, del informe. No categorías vagas: di el tipo de trabajo y POR QUÉ le va, ligado a cómo funciona. ${edad < 20 ? "Incluye qué estudiar o explorar ahora." : ""}
+4-6 campos o roles concretos, del informe, con el POR QUÉ ligado a cómo funcionas. ${edad < 20 ? "Incluye qué estudiar o explorar ahora." : ""}
 
 ## Dónde te desgastas
-2-3 entornos que lo van a agotar, y por qué. Esto vale tanto como lo anterior.
+2-3 entornos que te agotan, y por qué.
 
-## Lo que estás dejando sin usar
-Su mayor activo desaprovechado, de la SÍNTESIS del informe.
+## Tu momento ahora
+Tu etapa de vida desde un ángulo que no esperas. Qué te permite construir esta etapa que ninguna otra te daría. Qué estás postergando.
 
 Cierra con un primer paso concreto, sin título.`
   };
 
-  // ── 8. MOMENTO ACTUAL ──
-  p.momento_actual = {
-    system: SYSTEM_BASE,
-    user: `${CTX}${edadNota}
-
-Escribe "Tu Momento Actual". 200-250 palabras. Corto y que sorprenda.
-
-ZONA EXCLUSIVA: la etapa que atraviesa y qué está postergando de ella. No repitas herida, vocación ni prácticas de otros módulos.
-
-Usa del informe: MOMENTO ACTUAL.
-
-Texto corrido sin títulos:
-1. Nombra su etapa desde un ángulo que no espera. Honesto si es exigente.
-2. Lo que esta etapa concreta le permite construir y ninguna otra le permitiría.
-3. Cierra empujando a hoy.`
-  };
-
-  // ── 9. PRÁCTICA DIARIA ──
+  // ── 5. TU PRÁCTICA DIARIA ──
   p.practica_diaria = {
-    system: SYSTEM_BASE + `\n\nESTE MÓDULO CIERRA EL PERFIL. Tono cálido y sereno: aquí acompañas, no confrontas.`,
+    system: SYSTEM_BASE + `\n\nCIERRA EL PERFIL. Tono cálido y sereno: aquí acompañas, no confrontas. Conny Méndez y Mario Alonso Puig: esperanza aterrizada.`,
     user: `${CTX}${edadNota}
 
-Escribe "Tu Práctica Diaria". 250-300 palabras.
-
-ZONA EXCLUSIVA: la rutina concreta de mañana. No diagnostiques de nuevo.
+Escribe "Tu Práctica Diaria". 300-350 palabras. NO diagnostiques de nuevo: esto es la rutina de mañana.
 
 Apertura de 2 líneas sin título: aquí termina de leer y empieza a vivir.
 
@@ -972,7 +890,7 @@ async function llamarClaude(systemPrompt, userPrompt, claudeKey, maxTokens) {
   return (data.content || []).filter(b => b.type === "text").map(b => b.text).join("").trim();
 }
 
-const CLAVES_MODULOS = ["retrato","esencia","frecuencia","equilibrio","herida","direccion","mision","momento_actual","practica_diaria"];
+const CLAVES_MODULOS = ["quien_eres","herida","equilibrio","camino","practica_diaria"];
 
 async function generarModulos(prompts, claudeKey) {
   const perfil = {};
