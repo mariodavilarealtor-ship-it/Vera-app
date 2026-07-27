@@ -495,22 +495,48 @@ function traducirQualities(qualities) {
 const PALABRAS_PROHIBIDAS = [
 /\bplaneta\b/gi, /\bsigno\b/gi, /casa astrol/gi, /carta natal/gi, /astrolog/gi, /horóscopo/gi,
 /zodíac/gi, /zodiac/gi, /\bascendente\b/gi, /quir[oó]n/gi, /\bnodo\b/gi, /kabbalah/gi, /tikkun/gi,
-/tik[uú]n/gi, /tr[aá]nsito/gi, /retr[oó]grado/gi, /\bleo\b/gi, /\btauro\b/gi, /\baries\b/gi,
-/g[eé]minis/gi, /\bvirgo\b/gi, /\blibra\b/gi, /escorpio/gi, /sagitario/gi,
-/capricornio/gi, /acuario/gi, /piscis/gi, /\bc[aá]ncer\b/gi, /[aá]ngel/gi, /reiyel/gi, /sealiah/gi,
-/hebreo/gi, /\bsalmo\b/gi, /\btarot\b/gi, /numerolog/gi, /chakra/gi
+/tik[uú]n/gi, /tr[aá]nsito/gi, /retr[oó]grado/gi,
+/g[eé]minis/gi, /escorpio/gi, /sagitario/gi,
+/capricornio/gi, /acuario/gi, /piscis/gi, /[aá]ngel/gi, /reiyel/gi, /sealiah/gi,
+/hebreo/gi, /\bsalmo\b/gi, /\btarot\b/gi, /numerolog/gi, /chakra/gi,
+// nombres de planetas/puntos que se filtraron
+/\bmedio cielo\b/gi, /\bmedium coeli\b/gi, /\bmercurio\b/gi, /\bvenus\b/gi,
+/\bmarte\b/gi, /\bj[uú]piter\b/gi, /\bsaturno\b/gi, /\burano\b/gi, /\bneptuno\b/gi,
+/\bplut[oó]n\b/gi, /\blilith\b/gi
 ];
+
+// Términos que, si aparecen SOLOS (sin contexto astrológico obvio), se reemplazan
+// por una palabra neutra en vez de eliminar la frase, para no perder contenido bueno.
+const REEMPLAZOS = [
+  [/\btu MC\b/gi, "tu imagen pública"], [/\bel MC\b/gi, "la imagen pública"],
+  [/\bMC\b/g, "imagen pública"],
+  [/\btu Luna\b/gi, "tu mundo emocional"], [/\buna Luna\b/gi, "un mundo emocional"],
+  [/\bla Luna\b/gi, "el mundo emocional"], [/\bel Sol\b/gi, "tu identidad"],
+  [/\btu Sol\b/gi, "tu identidad"]
+];
+
+// Divide en oraciones; elimina las que contengan un término prohibido; deja el resto intacto.
+function quitarFrasesTecnicas(texto) {
+  const bloques = texto.split(/\n/);
+  return bloques.map(linea => {
+    // no tocar líneas de título ni enlaces
+    if (/^#{1,3}\s/.test(linea.trim()) || /\]\(https?:/.test(linea)) return linea;
+    const oraciones = linea.split(/(?<=[.!?])\s+/);
+    const filtradas = oraciones.filter(o => !PALABRAS_PROHIBIDAS.some(re => { re.lastIndex = 0; return re.test(o); }));
+    return filtradas.join(" ");
+  }).join("\n");
+}
 
 function limpiarTexto(texto) {
   if (!texto) return "";
   let limpio = texto;
-  for (const re of PALABRAS_PROHIBIDAS) limpio = limpio.replace(re, "");
-  // Separar títulos ## que hayan quedado pegados al texto anterior o posterior.
-  limpio = limpio.replace(/([^\n])\s*(#{2,3}\s)/g, "$1\n\n$2"); // texto ## -> salto antes
-  limpio = limpio.replace(/(#{2,3}[^\n]+?)\s{2,}([A-ZÁÉÍÓÚ¿¡])/g, "$1\n\n$2"); // ## Título Texto -> salto después
-  // Limpiar espacios múltiples DENTRO de cada línea, sin tocar los saltos de línea.
+  // 1) Reemplazos suaves (no rompen la frase).
+  for (const [re, rep] of REEMPLAZOS) limpio = limpio.replace(re, rep);
+  // 2) Cualquier frase que AÚN contenga un término técnico se elimina completa.
+  limpio = quitarFrasesTecnicas(limpio);
+  // 3) Formato de títulos.
+  limpio = limpio.replace(/([^\n])\s*(#{2,3}\s)/g, "$1\n\n$2");
   limpio = limpio.split("\n").map(l => l.replace(/[ \t]{2,}/g, " ").trimEnd()).join("\n");
-  // Colapsar más de 2 saltos seguidos a exactamente 2.
   limpio = limpio.replace(/\n{3,}/g, "\n\n");
   return limpio.trim();
 }
