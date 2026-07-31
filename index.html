@@ -377,6 +377,19 @@
     opacity: 0; animation: fadeUp 1s ease forwards 0.7s;
   }
 
+  .sent-status {
+    font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.8rem; min-height: 1em;
+    display: flex; align-items: center; gap: 0.7rem;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.8s;
+  }
+  .sent-status::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold); animation: pulse 1.4s ease-in-out infinite;
+  }
+  .sent-status.done { color: var(--gold-light); }
+  .sent-status.done::before { animation: none; background: var(--gold-light); }
+
   .sent-note {
     max-width: 480px; font-size: 0.82rem; line-height: 1.7;
     color: var(--stone); font-style: italic;
@@ -749,6 +762,7 @@
     Lo estamos escribiendo a tu medida en este momento. No es una plantilla: cada línea se construye a partir de quien eres, y eso toma unos minutos.
     En breve llegará a tu bandeja de entrada, listo para leerse con calma.
   </div>
+  <div class="sent-status" id="sent-status">Calculando tu código de origen...</div>
   <div class="sent-note">
     Si en unos minutos no lo ves, revisa la carpeta de spam o promociones —a veces se esconde ahí la primera vez.
     Tu perfil es único e irrepetible; vale la pequeña espera.
@@ -982,6 +996,9 @@
   }
 
   // Pantalla profesional y amigable: el perfil va en camino al correo.
+  // La línea de estado va rotando ~3 min para acompañar la espera real
+  // (el backend tarda ese tiempo generando), y luego se queda en un mensaje
+  // de cierre sereno. Así la espera se siente viva, no muerta.
   function mostrarConfirmacionCorreo() {
     document.getElementById('form-section').style.display = 'none';
     document.getElementById('loading-section').classList.remove('active');
@@ -990,6 +1007,41 @@
     document.getElementById('sent-email').textContent = state.email || 'tu correo';
     sent.classList.add('active');
     window.scrollTo(0, 0);
+    iniciarEstadoEspera();
+  }
+
+  // Mensajes que acompañan la generación (mismo espíritu que el loading original).
+  function iniciarEstadoEspera() {
+    const statusEl = document.getElementById('sent-status');
+    if (!statusEl) return;
+
+    const pasos = [
+      'Calculando tu código de origen...',
+      'Leyendo tu equilibrio interno...',
+      'Encontrando tu frecuencia de origen...',
+      'Reconociendo tu herida y tu don...',
+      'Trazando tu camino...',
+      'Situando tu momento actual...',
+      'Tejiendo tu perfil completo...',
+      'Dando los últimos toques...'
+    ];
+    const cierre = 'Tu perfil ya viene en camino a tu correo.';
+
+    let i = 0;
+    statusEl.classList.remove('done');
+    statusEl.textContent = pasos[0];
+
+    // Cambia cada ~20 s; 8 pasos ≈ 2 min 40 s de acompañamiento.
+    const intervalo = setInterval(function () {
+      i++;
+      if (i < pasos.length) {
+        statusEl.textContent = pasos[i];
+      } else {
+        clearInterval(intervalo);
+        statusEl.textContent = cierre;
+        statusEl.classList.add('done');   // deja de pulsar: señal de "listo"
+      }
+    }, 20000);
   }
 
   // ── RENDER DE PROSA (se conserva para mostrar el perfil en pantalla en el futuro,
