@@ -298,9 +298,37 @@ function quitarFrasesTecnicas(texto){
     return filtradas.join(" ");
   }).join("\n");
 }
-function limpiarTexto(texto){
+// Quita el título que el modelo a veces repite al inicio (el email ya pone
+// el título del módulo en su <h2>, así que ese primer ## sobra y se ve duplicado).
+function quitarTituloDuplicado(texto, tituloModulo){
+  if (!texto || !tituloModulo) return texto;
+  const norm = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]/g,"").trim();
+  const objetivo = norm(tituloModulo);
+  const lineas = texto.split("\n");
+  // Busca en las primeras 3 líneas no vacías un ## o texto suelto que sea el título.
+  let quitadas = 0;
+  const salida = [];
+  for (let i=0; i<lineas.length; i++){
+    const l = lineas[i];
+    const soloTexto = norm(l.replace(/^#{1,3}\s*/,""));
+    if (quitadas < 2 && soloTexto && soloTexto === objetivo){
+      quitadas++;      // salta esta línea (es el título repetido)
+      continue;
+    }
+    // una vez pasada la zona de cabecera, dejamos de buscar
+    if (l.trim() && soloTexto !== objetivo && salida.filter(x=>x.trim()).length>0) {
+      salida.push(...lineas.slice(i));
+      break;
+    }
+    salida.push(l);
+  }
+  return salida.join("\n");
+}
+
+function limpiarTexto(texto, tituloModulo){
   if (!texto) return "";
   let t = texto;
+  if (tituloModulo) t = quitarTituloDuplicado(t, tituloModulo);
   for (const [re,rep] of REEMPLAZOS) t = t.replace(re,rep);
   t = quitarFrasesTecnicas(t);
   t = t.replace(/([^\n])\s*(#{2,3}\s)/g,"$1\n\n$2");
@@ -637,7 +665,7 @@ async function generarModulos(prompts, claudeKey){
     for (let intento=1; intento<=2; intento++){
       try{
         const txt = await llamarClaude(prompts[k].system, prompts[k].user, claudeKey, 2500);
-        if (txt && txt.trim()) return limpiarTexto(txt);
+        if (txt && txt.trim()) return limpiarTexto(txt, TITULOS_MODULOS[k]);
       }catch(e){ if (intento===2) console.error(`Módulo ${k} falló:`, e.message); }
       await new Promise(r=>setTimeout(r,800));
     }
