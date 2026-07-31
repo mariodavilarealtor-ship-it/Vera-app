@@ -333,6 +333,69 @@
     text-transform: uppercase; color: var(--stone); text-align: center;
   }
 
+  /* ── CONFIRMACIÓN POR CORREO (pantalla nueva) ── */
+  #sent-section {
+    display: none; min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 35%, #2A1E0A 0%, #0F0D0A 65%);
+    color: var(--white);
+    align-items: center; justify-content: center;
+    flex-direction: column; padding: 2.5rem 1.8rem; text-align: center;
+  }
+  #sent-section.active { display: flex; }
+
+  .sent-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem; font-weight: 300; letter-spacing: 0.4em;
+    margin-bottom: 1.4rem;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.1s;
+  }
+  .sent-logo span { color: var(--gold); }
+
+  .sent-mark {
+    width: 62px; height: 62px; margin: 0 auto 1.8rem;
+    border: 1px solid var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.3s;
+  }
+  .sent-mark svg { width: 26px; height: 26px; }
+
+  .sent-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 300;
+    line-height: 1.3; margin-bottom: 1.3rem; max-width: 620px;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.5s;
+  }
+  .sent-email {
+    font-family: 'Montserrat', sans-serif; font-weight: 500;
+    color: var(--gold); font-size: 1rem; letter-spacing: 0.02em;
+    word-break: break-all;
+  }
+
+  .sent-text {
+    max-width: 540px; font-size: 0.95rem; line-height: 1.85;
+    color: rgba(255,255,255,0.78); margin-bottom: 1.4rem;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.7s;
+  }
+
+  .sent-note {
+    max-width: 480px; font-size: 0.82rem; line-height: 1.7;
+    color: var(--stone); font-style: italic;
+    border-top: 1px solid rgba(196,146,42,0.3);
+    padding-top: 1.4rem; margin-top: 0.6rem;
+    opacity: 0; animation: fadeUp 1s ease forwards 0.9s;
+  }
+
+  .sent-redes {
+    margin-top: 2.2rem; display: flex; gap: 1.4rem;
+    opacity: 0; animation: fadeUp 1s ease forwards 1.1s;
+  }
+  .sent-redes a {
+    color: var(--gold); text-decoration: none; font-size: 0.75rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    border-bottom: 1px solid transparent; padding-bottom: 2px; transition: all 0.3s;
+  }
+  .sent-redes a:hover { border-bottom-color: var(--gold); }
+
   /* REPORT */
   #report-section { display: none; background: var(--cream); color: var(--ink); min-height: 100vh; }
 
@@ -445,11 +508,6 @@
     margin: 1.4rem 0; line-height: 1.6;
   }
   .module-prose .vera-item { margin-bottom: 0.6rem; }
-
-  .module-failed {
-    padding: 1.2rem; background: var(--sand); border: 1px dashed var(--gold-light);
-    font-size: 0.85rem; color: var(--stone); font-style: italic; line-height: 1.6;
-  }
 
   .report-footer {
     text-align: center; padding: 2rem; background: var(--deep);
@@ -677,7 +735,32 @@
   <div class="loading-text" id="loading-text">Calculando tu código de origen...</div>
 </section>
 
-<!-- REPORT -->
+<!-- CONFIRMACIÓN POR CORREO -->
+<section id="sent-section">
+  <div class="sent-logo">VER<span>·</span>A</div>
+  <div class="sent-mark">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#C4922A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 6l-10 7L2 6"></path>
+      <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+    </svg>
+  </div>
+  <div class="sent-title">Tu perfil está en camino a<br><span class="sent-email" id="sent-email">tu correo</span></div>
+  <div class="sent-text">
+    Lo estamos escribiendo a tu medida en este momento. No es una plantilla: cada línea se construye a partir de quien eres, y eso toma unos minutos.
+    En breve llegará a tu bandeja de entrada, listo para leerse con calma.
+  </div>
+  <div class="sent-note">
+    Si en unos minutos no lo ves, revisa la carpeta de spam o promociones —a veces se esconde ahí la primera vez.
+    Tu perfil es único e irrepetible; vale la pequeña espera.
+  </div>
+  <div class="sent-redes">
+    <a href="https://www.instagram.com/ver.a.life" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.tiktok.com/@ver.a.life" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://www.youtube.com/@VER-A-q6z" target="_blank" rel="noopener">YouTube</a>
+  </div>
+</section>
+
+<!-- REPORT (opcional, se conserva para uso futuro sin timeout) -->
 <section id="report-section">
   <div class="report-header">
     <div class="report-logo">VER<span>·</span>A</div>
@@ -701,14 +784,12 @@
     consentimiento: ''
   };
 
-  // Etiquetas legibles de las 7 secciones, en el orden del contrato.
+  // Etiquetas legibles de las 5 secciones, en el orden del generate.js v4.0.
   const MODULOS_ORDEN = [
-    { key: 'retrato',         label: 'Tu Retrato' },
-    { key: 'esencia',         label: 'Tu Esencia' },
-    { key: 'frecuencia',      label: 'Tu Frecuencia de Origen' },
-    { key: 'equilibrio',      label: 'Tu Equilibrio Energético' },
-    { key: 'herida',          label: 'Tu Herida Original y tu Don' },
-    { key: 'momento_actual',  label: 'Tu Momento Actual' },
+    { key: 'quien_eres',      label: 'Quién Eres' },
+    { key: 'herida',          label: 'Tu Herida y Cómo Sanarla' },
+    { key: 'equilibrio',      label: 'De Qué Careces y Cómo Trabajarlo' },
+    { key: 'camino',          label: 'Tu Camino' },
     { key: 'practica_diaria', label: 'Tu Práctica Diaria' }
   ];
 
@@ -859,95 +940,66 @@
   }
 
   // ── LLAMADA AL BACKEND ──
-  // Contrato generate.js — envía: nombre, nombreCompleto, email, fecha, ciudad,
-  // paisCodigo, hora, franja, horaConocida, p1, p2, p3, p4, consentimiento.
-  // Recibe: { nombre, modulos:{retrato,esencia,frecuencia,equilibrio,herida,
-  //           momento_actual,practica_diaria}, avisoFranja }
+  // Contrato generate.js v4.0 — envía: nombre, nombreCompleto, email, fecha, ciudad,
+  // paisCodigo, hora, franja, horaConocida, p1, p2, p3, p4, consentimiento, pago.
+  // Recibe (cuando alcanza): { nombre, modulos:{quien_eres,herida,equilibrio,camino,practica_diaria}, avisoFranja }
 
-  async function callBackend() {
-    const response = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        nombre: state.nombre,
-        nombreCompleto: state.nombreCompleto,
-        email: state.email,
-        fecha: state.fecha,
-        ciudad: state.ciudad,
-        paisCodigo: state.paisCodigo,
-        hora: state.hora,
-        franja: state.franja,
-        horaConocida: state.horaConocida,
-        p1: state.p1,
-        p2: state.p2,
-        p3: state.p3,
-        p4: state.p4,
-        consentimiento: state.consentimiento,
-        pago: yaPago ? 'Si' : 'No'
-      })
-    });
-
-    const raw = await response.text();
-    let data;
-    try { data = JSON.parse(raw); }
-    catch (e) { throw new Error('Respuesta inesperada del servidor: ' + raw.slice(0, 200)); }
-
-    if (!response.ok) {
-      throw new Error(data && data.error ? data.error : ('Error ' + response.status));
-    }
-    return data;
+  function payload() {
+    return {
+      nombre: state.nombre,
+      nombreCompleto: state.nombreCompleto,
+      email: state.email,
+      fecha: state.fecha,
+      ciudad: state.ciudad,
+      paisCodigo: state.paisCodigo,
+      hora: state.hora,
+      franja: state.franja,
+      horaConocida: state.horaConocida,
+      p1: state.p1, p2: state.p2, p3: state.p3, p4: state.p4,
+      consentimiento: state.consentimiento,
+      pago: yaPago ? 'Si' : 'No'
+    };
   }
 
-  async function generateReport() {
-    document.getElementById('form-section').style.display = 'none';
-    document.getElementById('loading-section').classList.add('active');
+  // ── GENERAR PERFIL ──
+  // Estrategia anti-timeout: el backend tarda varios minutos (6 llamadas al modelo)
+  // y Vercel corta la conexión a los ~10 s en plan gratis. Por eso NO esperamos su
+  // respuesta: disparamos la petición y de inmediato mostramos la pantalla
+  // "tu perfil va a tu correo". El backend sigue en el servidor y envía el email
+  // al terminar. Así el usuario nunca ve un "Load failed".
 
-    const loadingTexts = [
-      'Calculando tu código de origen...',
-      'Leyendo tu equilibrio energético...',
-      'Encontrando tu frecuencia de origen...',
-      'Reconociendo tu herida y tu don...',
-      'Situando tu momento actual...',
-      'Tejiendo tu perfil completo...'
-    ];
-    let i = 0;
-    document.getElementById('loading-text').textContent = loadingTexts[0];
-    const interval = setInterval(() => {
-      i = (i + 1) % loadingTexts.length;
-      document.getElementById('loading-text').textContent = loadingTexts[i];
-    }, 1800);
-
+  function generateReport() {
     try {
-      const data = await callBackend();
-      clearInterval(interval);
-      showReport(data);
-    } catch (err) {
-      clearInterval(interval);
-      document.getElementById('loading-section').classList.remove('active');
-      document.getElementById('loading-section').style.display = 'none';
-      document.getElementById('form-section').style.display = 'block';
-      goStep(3);
-      alert('No pudimos generar tu perfil ahora mismo.\n\nDetalle: ' + err.message + '\n\nInténtalo de nuevo en un momento.');
-    }
+      fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload()),
+        keepalive: true
+      }).catch(function () { /* la entrega es por correo; ignoramos errores de red aquí */ });
+    } catch (e) { /* no-op */ }
+
+    mostrarConfirmacionCorreo();
   }
 
-  // ── RENDER DE PROSA ──
-  // El backend devuelve texto plano por módulo. Lo convertimos a HTML simple:
-  // dobles saltos = párrafos; una línea corta que parece un título (sin punto
-  // final y < 60 chars) se vuelve subtítulo; **negrita** y *cursiva* básicas.
+  // Pantalla profesional y amigable: el perfil va en camino al correo.
+  function mostrarConfirmacionCorreo() {
+    document.getElementById('form-section').style.display = 'none';
+    document.getElementById('loading-section').classList.remove('active');
+    document.getElementById('loading-section').style.display = 'none';
+    const sent = document.getElementById('sent-section');
+    document.getElementById('sent-email').textContent = state.email || 'tu correo';
+    sent.classList.add('active');
+    window.scrollTo(0, 0);
+  }
 
-  // ── RENDER DE PROSA (NUEVO) ──
-  // Convierte el markdown que escribe el modelo a HTML elegante:
-  // # y ## -> títulos (se omite el primero si repite la etiqueta del módulo)
-  // **negrita**, *cursiva*, [texto](url) -> enlace, --- -> separador,
-  // listas (1. / - / >) -> formato. Dobles saltos = párrafos.
+  // ── RENDER DE PROSA (se conserva para mostrar el perfil en pantalla en el futuro,
+  //    p. ej. con Vercel Pro sin límite de tiempo) ──
 
   function escapeHTML(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
   function inlineFormat(s) {
-    // Primero enlaces [texto](url), luego negrita y cursiva.
     return s
       .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
         '<a href="$2" target="_blank" rel="noopener">$1</a>')
@@ -955,20 +1007,12 @@
       .replace(/\*(.+?)\*/g, '<em>$1</em>');
   }
 
-  // Quita el título principal que el modelo repite al inicio (ej. "# Tu Esencia"
-  // o "# El retrato VER·A de Mario"), para que no salga duplicado con la etiqueta
-  // de la sección que ya pone la web. Regla simple y robusta: si la primera línea
-  // de contenido es un encabezado markdown (#, ## ...), se elimina; ese primer
-  // encabezado SIEMPRE es el título del módulo.
   function quitarTituloDuplicado(texto, label) {
     const lineas = texto.replace(/\r/g, '').split('\n');
     let i = 0;
-    // Salta líneas vacías y separadores (---) iniciales
     while (i < lineas.length && (lineas[i].trim() === '' || /^[-*_]{3,}$/.test(lineas[i].trim()))) i++;
     if (i < lineas.length && /^#{1,3}\s+\S/.test(lineas[i].trim())) {
-      // La primera línea con contenido es un encabezado -> es el título del módulo, se quita.
       lineas.splice(0, i + 1);
-      // Limpia separadores/vacíos que queden justo después
       while (lineas.length && (lineas[0].trim() === '' || /^[-*_]{3,}$/.test(lineas[0].trim()))) lineas.shift();
       return lineas.join('\n');
     }
@@ -981,12 +1025,10 @@
     let html = '';
 
     for (const bloque of bloques) {
-      // Separador horizontal ---
       if (/^[-*_]{3,}$/.test(bloque)) { html += '<hr class="vera-sep">'; continue; }
 
       const lineas = bloque.split('\n').map(l => l.trim()).filter(Boolean);
 
-      // ¿El bloque entero es una lista? (todas las líneas empiezan con número o viñeta)
       const esLista = lineas.length > 1 && lineas.every(l => /^(\d+[.)]\s|[-•]\s)/.test(l));
       if (esLista) {
         const ordenada = /^\d+[.)]\s/.test(lineas[0]);
@@ -997,7 +1039,6 @@
         continue;
       }
 
-      // Procesa línea a línea dentro del bloque
       let buffer = [];
       const flush = () => {
         if (buffer.length) {
@@ -1018,11 +1059,9 @@
           flush();
           html += `<blockquote class="vera-quote">${inlineFormat(escapeHTML(l.replace(/^>\s?/, '')))}</blockquote>`;
         } else if (/^(\d+[.)]\s|[-•]\s)/.test(l)) {
-          // viñeta suelta dentro de prosa
           flush();
           html += `<p class="vera-item">${inlineFormat(escapeHTML(l.replace(/^(\d+[.)]\s|[-•]\s)/, '• ')))}</p>`;
         } else {
-          // ¿línea-título sin almohadilla? (corta, sin punto final) -> subtítulo suave
           const esTitulo = l.length <= 55 && !/[.:;!?,]$/.test(l) && !/[.]/.test(l) && lineas.length > 1 && l === lineas[0];
           if (esTitulo) { flush(); html += `<h4 class="vera-h4">${inlineFormat(escapeHTML(l))}</h4>`; }
           else buffer.push(l);
@@ -1033,25 +1072,23 @@
     return html;
   }
 
-
-  // ── MOSTRAR REPORTE ──
-
+  // Muestra el perfil en pantalla. Omite en silencio los módulos vacíos:
+  // nunca muestra "no se pudo generar".
   function showReport(data) {
     document.getElementById('loading-section').classList.remove('active');
     document.getElementById('loading-section').style.display = 'none';
+    document.getElementById('sent-section').classList.remove('active');
 
     document.getElementById('report-name').textContent = data.nombre || state.nombre;
 
     const modulos = data.modulos || {};
     const cuerpo = MODULOS_ORDEN.map(({ key, label }) => {
       const texto = modulos[key];
-      const contenido = (texto && texto.trim())
-        ? `<div class="module-prose">${prosaAHtml(texto, label)}</div>`
-        : `<div class="module-failed">Este apartado no se pudo generar en esta ocasión. Escríbenos y lo regeneramos para ti sin coste.</div>`;
+      if (!texto || !texto.trim()) return '';
       return `
         <div class="report-module">
           <div class="section-label">${label}</div>
-          ${contenido}
+          <div class="module-prose">${prosaAHtml(texto, label)}</div>
         </div>`;
     }).join('');
 
@@ -1068,3 +1105,4 @@
 </script>
 </body>
 </html>
+
